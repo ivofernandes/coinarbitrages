@@ -6,8 +6,7 @@ import android.content.Intent;
 import com.coinarbritages.coinarbritages.common.Log;
 
 import com.coinarbritages.coinarbritages.common.SharedResources;
-import com.coinarbritages.coinarbritages.manager.UserLocationManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,9 +31,7 @@ public class NotificationSchedulingService extends IntentService {
     // Fields
     private Intent intent;
 
-    private WeatherDataManager weatherDataManager = WeatherDataManager.getInstance();
-
-    private UserLocationManager userLocationManager = UserLocationManager.getInstance();
+    private DataManager weatherDataManager = DataManager.getInstance();
 
     private Set<String> updateRequestType = new HashSet<String>();
 
@@ -74,8 +71,7 @@ public class NotificationSchedulingService extends IntentService {
     public void sendNotification(){
         try {
 
-            UserLocationManager.getInstance().getUserLocation(
-                    WeatherDataManager.WeatherRequestType.NOTIFICATION);
+            DataManager.getInstance().requestAllData(DataManager.WeatherRequestType.NOTIFICATION);
         }catch (Exception e) {
             Log.e(TAG, "error trying to generate a weather notification: " + e.getMessage(), e);
             done();

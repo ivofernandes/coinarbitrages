@@ -24,7 +24,6 @@ import com.coinarbritages.coinarbritages.forecastView.ExtrapolationFrom3htoDaily
 import com.coinarbritages.coinarbritages.manager.ForecastInterfaceManager;
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 import com.coinarbritages.coinarbritages.common.i18n.UnitManager;
-import com.coinarbritages.coinarbritages.manager.UserLocationManager;
 import com.coinarbritages.coinarbritages.manager.WeatherConditionManager;
 
 import org.json.JSONObject;
@@ -48,7 +47,6 @@ public class DetailsActivity extends ActionBarActivity {
     // Fields
     private ForecastInterfaceManager interfaceManager = ForecastInterfaceManager.getInstance();
     private LayoutManager layoutManager = LayoutManager.getInstance();
-    private UserLocationManager userLocationManager = UserLocationManager.getInstance();
 
     private LinearLayout panel;
     private JSONObject prediction;
@@ -71,10 +69,6 @@ public class DetailsActivity extends ActionBarActivity {
         // Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
-        if(userLocationManager.getLocationText() != null && !userLocationManager.getLocationText().equals("")) {
-            setTitle(userLocationManager.getLocationText());
-        }
 
         // Change colors
         RelativeLayout mainPanel = (RelativeLayout) findViewById(R.id.id3hoursDetailsMainPanel);

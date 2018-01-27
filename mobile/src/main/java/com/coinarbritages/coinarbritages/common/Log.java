@@ -9,7 +9,7 @@ import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.activities.LogActivity;
 import com.coinarbritages.coinarbritages.common.configuration.CacheManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,7 +136,7 @@ public class Log {
         while(toRemove) {
             Date firstDate = clickCounter.get(0);
 
-            toRemove = !WeatherDataManager.insideDateThreshold(firstDate, 5);
+            toRemove = !DataManager.insideDateThreshold(firstDate, 5);
 
             if(toRemove){
                 clickCounter.remove(0);

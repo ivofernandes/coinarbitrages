@@ -7,7 +7,7 @@ import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.Weather;
 import com.coinarbritages.coinarbritages.data.WeatherPrediction;
 import com.coinarbritages.coinarbritages.manager.WeatherConditionManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -169,7 +169,7 @@ public class ExtrapolationFrom3htoDaily {
      */
     public WeatherPrediction predictionForDay(String dateString, Date date) {
         if(lastPredictionTime != null && date != null && dateString != null
-                && WeatherDataManager.insideDateThreshold(date, lastPredictionTime, 60 * 60 * 24)){
+                && DataManager.insideDateThreshold(date, lastPredictionTime, 60 * 60 * 24)){
             return cacheMinMax.get(dateString);
         }
 

@@ -53,22 +53,20 @@ public class ForecastInterfaceManager {
     // Receivers
     public void receives3HourForecast(JSONObject forecastCurrent, JSONObject forecast3h,
                                       double latitude, double longitude,
-                                      WeatherDataManager.WeatherRequestType weatherRequestType,
+                                      DataManager.WeatherRequestType weatherRequestType,
                                       Date lastUpdate) throws JSONException {
         this.lastUpdate = lastUpdate;
 
-        UserLocationManager.getInstance().commitUpdateLocation(latitude, longitude);
-
-        if(weatherRequestType.equals(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS)) {
+        if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
             simpleForecastUI.show3HoursForecast(forecast3h, this.lastUpdate);
             simpleForecastUI.showCurrentForecast(forecastCurrent);
-        }else if(weatherRequestType.equals(WeatherDataManager.WeatherRequestType.NOTIFICATION)) {
+        }else if(weatherRequestType.equals(DataManager.WeatherRequestType.NOTIFICATION)) {
             sendNotificationManager.fireNotications(forecast3h);
         }
     }
 
-    public void receivesDailyForecast(JSONObject response, WeatherDataManager.WeatherRequestType weatherRequestType) throws JSONException {
-        if(weatherRequestType.equals(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS)) {
+    public void receivesDailyForecast(JSONObject response, DataManager.WeatherRequestType weatherRequestType) throws JSONException {
+        if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
             simpleForecastUI.showDailyForecast(response);
         }
     }

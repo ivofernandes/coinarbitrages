@@ -14,8 +14,7 @@ import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.CacheManager;
 import com.coinarbritages.coinarbritages.common.i18n.LanguageManager;
-import com.coinarbritages.coinarbritages.manager.UserLocationManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 
 import org.json.JSONObject;
@@ -71,7 +70,7 @@ public class OpenWeatherRequest {
      * Make the requests to get the weather data
      */
     public void request_current_3hours_daily(double latitude, double longitude,Map<String,String> options,
-                                             WeatherDataManager.WeatherRequestType weatherRequestType){
+                                             DataManager.WeatherRequestType weatherRequestType){
         this.options = options;
 
         // Reset the variables
@@ -97,7 +96,7 @@ public class OpenWeatherRequest {
      * Request data for 3 hours interval
      */
     private void request(String requestDataType, boolean retry,
-                         WeatherDataManager.WeatherRequestType weatherRequestType,
+                         DataManager.WeatherRequestType weatherRequestType,
                          double latitude, double longitude) {
 
         // If don't have internet access, try to get data from cache
@@ -107,7 +106,7 @@ public class OpenWeatherRequest {
             Log.d(TAG, requestDataType + " retrieved from cache: " +retrieved);
 
             if(!retrieved){
-                if(weatherRequestType.equals(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS)) {
+                if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
                     builder.setMessage(R.string.enableWifiMessage)
                             .setCancelable(false)
@@ -141,7 +140,7 @@ public class OpenWeatherRequest {
      * @param longitude
      */
     private void requestTryCicle(String requestDataType, boolean retry,
-                                 WeatherDataManager.WeatherRequestType weatherRequestType,
+                                 DataManager.WeatherRequestType weatherRequestType,
                                  double latitude, double longitude) {
 
         // If is retrying to get the data, increment the retry control var
@@ -179,7 +178,7 @@ public class OpenWeatherRequest {
                 }
                 // If we can't get data in any way...
                 else if (requestDataType.equals(REQUEST_DATA_3_HOURS)) {
-                    if (weatherRequestType.equals(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS)) {
+                    if (weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
                         String noInternetError = sharedResources.resolveString(R.string.error_requesting_data);
                         Toast.makeText(sharedResources.getContext(), noInternetError, Toast.LENGTH_SHORT).show();
                     }
@@ -188,14 +187,17 @@ public class OpenWeatherRequest {
         }
     }
 
-    private int calculateCache(WeatherDataManager.WeatherRequestType requestType) {
+    private int calculateCache(DataManager.WeatherRequestType requestType) {
         return CACHE_TIMEOUT;
     }
 
-    private void makeRequest(String requestType, WeatherDataManager.WeatherRequestType weatherRequestType, double latitude, double longitude, Integer tries){
+    private void makeRequest(String requestType, DataManager.WeatherRequestType weatherRequestType, double latitude, double longitude, Integer tries){
 
+
+        // https://api.gdax.com/products/ETH-EUR/trades
+        // https://api.kraken.com/0/public/Ticker?pair=ETHEUR
         if(requestType != null) {
-            String url = urlForForecast(latitude, longitude, options, requestType,tries);
+            String url = "https://api.gdax.com/products/ETH-EUR/trades";
 
             RequestTask requestTask = new RequestTask(requestType, this,weatherRequestType,latitude,longitude);
 
@@ -205,7 +207,7 @@ public class OpenWeatherRequest {
     }
 
     public void response(String response, String requestType,
-                         WeatherDataManager.WeatherRequestType weatherRequestType,
+                         DataManager.WeatherRequestType weatherRequestType,
                          boolean dataFromCache, Date lastUpdateDate, double latitude, double longitude){
 
         Log.v(TAG, requestType + " weatherRequestType: " + weatherRequestType + " response: " + response);
@@ -221,7 +223,7 @@ public class OpenWeatherRequest {
             try {
                 JSONObject json = new JSONObject(response);
                 if(validResponse(json,response)) {
-                    WeatherDataManager.getInstance().response(response, json, requestType,
+                    DataManager.getInstance().response(response, json, requestType,
                             weatherRequestType, dataFromCache, lastUpdateDate);
                 }else{
                     request(requestType, true, weatherRequestType, latitude, longitude); // retry
@@ -249,7 +251,7 @@ public class OpenWeatherRequest {
      * @param latitude
      *@param longitude @return true if data was retrieved from cache
      */
-    private boolean tryRetrieveFromCache(String requestType, int cacheTimeout, WeatherDataManager.WeatherRequestType weatherRequestType, double latitude, double longitude) {
+    private boolean tryRetrieveFromCache(String requestType, int cacheTimeout, DataManager.WeatherRequestType weatherRequestType, double latitude, double longitude) {
         try {
 
             // First of all, validate if the cache remains valid
@@ -264,7 +266,7 @@ public class OpenWeatherRequest {
 
             Date date = CacheManager.DATE_FORMAT.parse(dateString);
 
-            boolean validData = WeatherDataManager.insideDateThreshold(date, cacheTimeout);
+            boolean validData = DataManager.insideDateThreshold(date, cacheTimeout);
 
             if(!validData) return false;
 
@@ -286,8 +288,6 @@ public class OpenWeatherRequest {
             boolean dataFromCache = true;
             response(dataString,requestType, weatherRequestType, dataFromCache, date, latitude, longitude);
 
-            UserLocationManager.getInstance().dataRetrievedFromCache();
-
             return true;
         }catch (Exception e){
             Log.e(TAG, "Error retrieving data from Cache", e);
@@ -305,70 +305,6 @@ public class OpenWeatherRequest {
         }
 
         return true;
-    }
-
-    /**
-     *  @param latitude
-     * @param longitude
-     * @param options
-     * @param requestType defines if the request_current_3hours_daily is one of the following types:
-     ** REQUEST_DATA_3_HOURS
-     *** http://api.openweathermap.org/data/2.5/forecast?appid=0f3f0b0574edaf1267d5439472b77891&lat=38.71685333333333&lon=-9.162623333333332&units=metric&lang=pt
-     ** REQUEST_DATA_DAILY
-     * @param tries
-     *
-     */
-    private String urlForForecast(double latitude, double longitude, Map<String, String> options, String requestType, Integer tries) {
-
-        String language = LanguageManager.getInstance().getLanguage();
-
-        String url = BASE_URL + requestType + "?appid=" + OPEN_WEATHER_MAP_KEY
-                + paramsForLocation(latitude, longitude,tries);
-
-        for (Map.Entry<String,String> entry : options.entrySet()){
-            url += "&" + entry.getKey() + "=" + entry.getValue();
-        }
-
-        // calculate the number of pages to show
-        if(requestType.equals(REQUEST_DATA_DAILY)){
-            url += "&cnt=16";
-        }
-
-        url += "&lang=" + language;
-
-        return url;
-    }
-
-    /**
-     * Get the location based on the coordinates and the number of tries,
-     * because if is a retry will use geocode to get the city and
-     * @param latitude
-     * @param longitude
-     * @param tries
-     * @return
-     */
-    private String paramsForLocation(double latitude, double longitude, Integer tries) {
-
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(7);
-        String locationQuery = "&lat=" + nf.format(latitude) + "&lon=" + nf.format(longitude);
-
-        // If can't get by coordinates, try using location name
-        if(tries > -1) {
-            String locationName = UserLocationManager.getLocationName(latitude,longitude, Locale.US);
-            Log.i(TAG, "locale name for location: " + locationName);
-            if(locationName != null){
-                locationQuery = "&q=" + locationName;
-
-                try{
-                    if(MainActivity.getInstance() != null) {
-                        MainActivity.getInstance().setAppTitle(locationName);
-                    }
-                }catch (Exception e){}
-            }
-        }
-
-        return locationQuery;
     }
 
 }

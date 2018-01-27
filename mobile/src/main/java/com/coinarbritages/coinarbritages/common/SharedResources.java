@@ -9,7 +9,6 @@ import android.content.Context;
 
 import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.common.configuration.UserPreferencesManager;
-import com.coinarbritages.coinarbritages.manager.UserLocationManager;
 import com.coinarbritages.coinarbritages.scheduler.NotificationAlarmReceiver;
 
 import java.text.DateFormat;
@@ -77,18 +76,9 @@ public class SharedResources {
         Log.d(TAG, "shared resources - init notification manager");
         initNotificationManager();
 
-        Log.d(TAG, "shared resources - init location manager");
-        initLocationManager();
-
         inited = true;
 
         Log.d(TAG, "shared resources inited");
-    }
-
-    private void initLocationManager() {
-        // Acquire reference to the LocationManager
-        LocationManager mLocationManager = getLocationManager();
-
     }
 
     private void initNotificationManager() {
@@ -202,20 +192,5 @@ public class SharedResources {
         }
     }
 
-    public boolean isGpsEnabled() {
-        LocationManager mLocationManager = getLocationManager();
-        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
 
-    public LocationManager getLocationManager() {
-        LocationManager mLocationManager;
-        if (null == (mLocationManager = (LocationManager) SharedResources.getInstance().getContext().getSystemService(
-                SharedResources.getInstance().getContext().LOCATION_SERVICE))) {
-            UserLocationManager.getInstance().noLocationManager();
-        }
-        UserLocationManager.getInstance().setLocationManager(mLocationManager);
-
-        return mLocationManager;
-    }
 }

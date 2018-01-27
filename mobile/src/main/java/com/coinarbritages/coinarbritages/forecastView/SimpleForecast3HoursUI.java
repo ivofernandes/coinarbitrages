@@ -21,7 +21,7 @@ import com.coinarbritages.coinarbritages.common.slider.SlidingItem;
 import com.coinarbritages.coinarbritages.common.slider.SlidingViewPagerFragment;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,7 +114,7 @@ public class SimpleForecast3HoursUI extends SlidingItem {
 
         // show last update if already passed 90 minutes from the data date
         int minutes = 90;
-        if(!WeatherDataManager.insideDateThreshold(this.lastUpdate, minutes)) {
+        if(!DataManager.insideDateThreshold(this.lastUpdate, minutes)) {
             String dateString = sharedResources.formatDate(this.lastUpdate) + " "
                     + sharedResources.getTimeFormat().format(this.lastUpdate);
             MainActivity.getInstance().setLastUpdate(dateString,layoutManager.getForegroundColor());

@@ -3,7 +3,7 @@ package com.coinarbritages.coinarbritages.OpenWeatherMap;
 import android.os.AsyncTask;
 import com.coinarbritages.coinarbritages.common.Log;
 
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import org.apache.commons.io.IOUtils;
 
@@ -23,14 +23,14 @@ public class RequestTask extends AsyncTask<String, String, String> {
 
     private final String requestType;
     private final OpenWeatherRequest openWeatherRequest;
-    private final WeatherDataManager.WeatherRequestType weatherRequestType;
+    private final DataManager.WeatherRequestType weatherRequestType;
     private final double latitude;
     private final double longitude;
 
     private String urlString = null;
 
     public RequestTask(String requestType, OpenWeatherRequest openWeatherRequest,
-                       WeatherDataManager.WeatherRequestType weatherRequestType,
+                       DataManager.WeatherRequestType weatherRequestType,
                        double latitude, double longitude) {
         this.requestType = requestType;
         this.openWeatherRequest = openWeatherRequest;

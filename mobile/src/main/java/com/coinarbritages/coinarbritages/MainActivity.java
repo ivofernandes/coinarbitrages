@@ -3,6 +3,7 @@ package com.coinarbritages.coinarbritages;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.View;
@@ -19,8 +20,7 @@ import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 import com.coinarbritages.coinarbritages.manager.ForecastInterfaceManager;
-import com.coinarbritages.coinarbritages.manager.UserLocationManager;
-import com.coinarbritages.coinarbritages.manager.WeatherDataManager;
+import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.scheduler.SendNotificationManager;
 
 /**
@@ -36,10 +36,10 @@ public class MainActivity extends MenuActivity {
 
     private SharedResources sharedResources = SharedResources.getInstance();
 
-    // Class to get the location of the user
-    private UserLocationManager userLocationManager = UserLocationManager.getInstance();
+    // Data manager
+    private DataManager dataManager = DataManager.getInstance();
 
-    // Forecast User Interface
+    //  User Interface
     private ForecastInterfaceManager forecastInterfaceManager = ForecastInterfaceManager.getInstance();
     private LayoutManager layoutManager = LayoutManager.getInstance();
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
@@ -134,7 +134,7 @@ public class MainActivity extends MenuActivity {
         final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
         forecastInterfaceManager.setForecastView(forecastPanel);
 
-        userLocationManager.getUserLocation(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS);
+        dataManager.requestAllData(DataManager.WeatherRequestType.UPDATE_VIEWS);
     }
 
     @Override

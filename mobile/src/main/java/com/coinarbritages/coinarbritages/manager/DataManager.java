@@ -21,14 +21,14 @@ import java.util.Map;
  *
  * Class that manage how the data is requested, received, and distributed to interface manager
  */
-public class WeatherDataManager {
+public class DataManager {
 
     // Singleton
-    private static WeatherDataManager instance = new WeatherDataManager();
+    private static DataManager instance = new DataManager();
 
-    private WeatherDataManager() {}
+    private DataManager() {}
 
-    public static WeatherDataManager getInstance() {
+    public static DataManager getInstance() {
         return instance;
     }
 
@@ -36,7 +36,6 @@ public class WeatherDataManager {
     public enum WeatherRequestType {
         UPDATE_VIEWS, // Request called by the user, refresh all views
         NOTIFICATION, // Request to send a notifications
-
     };
 
     private enum RequestState{
@@ -67,7 +66,7 @@ public class WeatherDataManager {
     private Handler customHandler  = new Handler();;
 
     // Actions
-    public void requestAllData(double latitude, double longitude,WeatherRequestType weatherRequestType) {
+    public void requestAllData(WeatherRequestType weatherRequestType) {
 
         // Reset vars
         this.state = RequestState.REQUESTING;
@@ -78,14 +77,12 @@ public class WeatherDataManager {
         stepDaily = false;
         this.processCurrentAnd3hCount = 0;
 
-        if(weatherRequestType.equals(WeatherDataManager.WeatherRequestType.UPDATE_VIEWS)) {
+        if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
             forecastInterfaceManager.reset();
         }
 
         // Set global params
         this.weatherRequestType = weatherRequestType;
-        this.latitude = latitude;
-        this.longitude = longitude;
 
         //TODO Create timeout for responses that put the state DONE
 
@@ -139,7 +136,7 @@ public class WeatherDataManager {
         processRequests(weatherRequestType);
 
         // Update the wake up control
-        if(this.weatherRequestType.equals(WeatherDataManager.WeatherRequestType.NOTIFICATION)){
+        if(this.weatherRequestType.equals(DataManager.WeatherRequestType.NOTIFICATION)){
             NotificationSchedulingService.getInstance().updated(requestType);
         }
     }
