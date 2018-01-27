@@ -2,7 +2,7 @@ package com.coinarbritages.coinarbritages.common.configuration;
 
 import android.content.SharedPreferences;
 
-import com.coinarbritages.coinarbritages.OpenWeatherMap.OpenWeatherRequest;
+import com.coinarbritages.coinarbritages.OpenWeatherMap.ExchangeDataRequest;
 import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 
@@ -26,20 +26,6 @@ public class CacheManager {
         return instance;
     }
 
-    // Cache Constants weather data
-    public static final String KEY_OPEN_WEATHER_MAP_3HOURS = "OPEN_WEATHER_MAP_3HOURS";
-    public static final String KEY_OPEN_WEATHER_MAP_DAILY = "OPEN_WEATHER_MAP_DAILY";
-    public static final String KEY_OPEN_WEATHER_MAP_CURRENT = "OPEN_WEATHER_MAP_CURRENT";
-
-    public static final String SUFIX_DATE = "DATE";
-    public static final String SUFIX_LOCATION = "LOCATION";
-    public static final String SUFIX_DATA = "DATA";
-
-    // Cache Constants Location
-    public static final String KEY_GPS_DATE = "GPS_DATE";
-    public static final String KEY_LOCATIONS = "LOCATIONS";
-    public static final String LOCATION_DESCRIPTION = "LOCATION_DESCRIPTION";
-
     // Cache Constants Settings
 
     public static final String PREFERENCE_SETTINGS_NOTIFICATION = "SETTINGS_NOTIFICATION";
@@ -54,20 +40,6 @@ public class CacheManager {
     // Fields
     private SharedPreferences sharedPreferences;
 
-
-    // Static methods
-    public static String getPreferenceFor(String requestType, String preferenceSufix) {
-        String keyPrefix = null;
-        if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_3_HOURS)) {
-            keyPrefix = CacheManager.KEY_OPEN_WEATHER_MAP_3HOURS;
-        } else if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_DAILY)) {
-            keyPrefix = CacheManager.KEY_OPEN_WEATHER_MAP_DAILY;
-        } else if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_CURRENT)) {
-            keyPrefix = CacheManager.KEY_OPEN_WEATHER_MAP_CURRENT;
-        }
-
-        return requestType + "_" + preferenceSufix;
-    }
 
     // Methods
     public SharedPreferences getSharedPreferences() {

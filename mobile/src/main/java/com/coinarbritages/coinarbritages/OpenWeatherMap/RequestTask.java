@@ -22,21 +22,16 @@ public class RequestTask extends AsyncTask<String, String, String> {
     private static final String TAG = "RequestTask";
 
     private final String requestType;
-    private final OpenWeatherRequest openWeatherRequest;
+    private final ExchangeDataRequest openWeatherRequest;
     private final DataManager.WeatherRequestType weatherRequestType;
-    private final double latitude;
-    private final double longitude;
 
     private String urlString = null;
 
-    public RequestTask(String requestType, OpenWeatherRequest openWeatherRequest,
-                       DataManager.WeatherRequestType weatherRequestType,
-                       double latitude, double longitude) {
+    public RequestTask(String requestType, ExchangeDataRequest openWeatherRequest,
+                       DataManager.WeatherRequestType weatherRequestType) {
         this.requestType = requestType;
         this.openWeatherRequest = openWeatherRequest;
         this.weatherRequestType = weatherRequestType;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     @Override
@@ -65,8 +60,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
             super.onPostExecute(result);
 
             Log.v(TAG, "received forecast: " + result);
-            boolean dataFromCache = false;
-            openWeatherRequest.response(result, requestType, weatherRequestType, dataFromCache, new Date(), latitude, longitude);
+            openWeatherRequest.response(result, requestType, weatherRequestType, new Date());
         }catch(Exception e){
             Log.e(TAG, "Error processing request " + requestType + " > " + weatherRequestType, e);
         }

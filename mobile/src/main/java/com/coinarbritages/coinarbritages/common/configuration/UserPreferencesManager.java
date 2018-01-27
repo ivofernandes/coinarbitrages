@@ -59,8 +59,6 @@ public class UserPreferencesManager {
 
         CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_NOTIFICATION,
                 this.notification);
-
-        Log.clickToLog();
     }
 
     public void setUseGps(boolean useGps) {

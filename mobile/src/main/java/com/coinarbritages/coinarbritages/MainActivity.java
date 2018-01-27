@@ -70,7 +70,13 @@ public class MainActivity extends MenuActivity {
         super.onResume();
         SharedResources.getInstance().setContext(getApplicationContext());
 
-        start();
+        // Start Forecast UI manager
+        final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
+        forecastInterfaceManager.setForecastView(forecastPanel);
+
+        dataManager.requestAllData(DataManager.WeatherRequestType.UPDATE_VIEWS);
+
+        initViews();
 
         // Init activity
 
@@ -109,32 +115,9 @@ public class MainActivity extends MenuActivity {
         textDaily.setTextColor(layoutManager.getSmoothForegroundColor());
     }
 
-
-    private void start() {
-
-        initLocation();
-
-        initViews();
-    }
-
-
-
     private void initViews() {
         this.mainView = (LinearLayout) findViewById(R.id.mainView);
         this.mainView.setBackgroundColor(layoutManager.getBackgroundColor());
-    }
-
-
-    /**
-     * Do the stuff related to start the user location manager
-     */
-    private void initLocation() {
-
-        // Start Forecast UI manager
-        final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
-        forecastInterfaceManager.setForecastView(forecastPanel);
-
-        dataManager.requestAllData(DataManager.WeatherRequestType.UPDATE_VIEWS);
     }
 
     @Override

@@ -61,7 +61,6 @@ public class SharedResources {
         Log.d(TAG, "start initing shared resources");
 
         setContext(context);
-        Log.initLog();
 
         Log.d(TAG, "shared resources - set locale");
         Locale locale = SharedResources.getInstance().getContext().getResources().getConfiguration().locale;

@@ -11,7 +11,6 @@ import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.OpenWeatherMap.processors.Json3HoursProcessor;
 import com.coinarbritages.coinarbritages.common.SharedResources;
-import com.coinarbritages.coinarbritages.common.configuration.CacheManager;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
 import com.coinarbritages.coinarbritages.common.configuration.UserPreferencesManager;
 import com.coinarbritages.coinarbritages.manager.WeatherConditionManager;
@@ -169,84 +168,17 @@ public class SendNotificationManager {
         boolean weatherNotification = !rain.equals(WeatherConditionManager.WeatherCondition.CLOUDS);
 
         if(weatherNotification) {
-            Log.d(TAG,"fire notification if is notification time");
-            // Validate if already fired a notification in this day
-            if(isNotificationTime(notificationTime,nextDay)) {
-                Log.d(TAG,"is notification time!!");
-                // Generate the notification
-                String title = sharedResources.resolveString(R.string.notification_title);
+            // Generate the notification
+            String title = sharedResources.resolveString(R.string.notification_title);
 
-                String description = whenExpect + " " + weatherDescription;
+            String description = whenExpect + " " + weatherDescription;
 
-                fireNotication(title, description);
+            fireNotication(title, description);
 
-                String dateString = CacheManager.DATE_FORMAT.format(notificationTime.getTime());
+            return true;
 
-                SharedPreferences.Editor editor = CacheManager.getInstance().getSharedPreferences().edit();
-                editor.putString(LAST_NOTIFICATION, dateString);
-                editor.commit();
-
-                return true;
-            }
         }
         return false;
-    }
-
-    public boolean isNotificationTime(Calendar notificationTime, int nextDay){
-        Log.d(TAG,"validate date for notification in " + nextDay + ": "
-                + notificationTime.getTime());
-
-        boolean result = true;
-
-        Calendar now = Calendar.getInstance();
-        now.setTime(new Date());
-
-        int notificationHour = SendNotificationManager.getInstance().getNotificationHour();
-        int notificationMinute = SendNotificationManager.getInstance().getNotificationMinute();
-
-        Calendar notificationDate = Calendar.getInstance();
-        notificationDate.setTime(new Date());
-        notificationDate.set(Calendar.HOUR_OF_DAY, notificationHour);
-        notificationDate.set(Calendar.MINUTE, notificationMinute);
-
-        // If isn't come yet the notification time return...
-        Calendar startOfTheDay = Calendar.getInstance();
-        //TODO user config to know when the notification will be fired?
-        notificationDate.set(Calendar.HOUR_OF_DAY, 18);
-        notificationDate.set(Calendar.MINUTE, 0);
-
-        // Send notifications only if passed the notification time
-        if (now.before(notificationDate) && nextDay > 0){
-            return false;
-        }
-
-        Log.d(TAG,"current datetime is ok for notifications");
-
-        // Validate if the notification already been sent
-        String lastNotification =
-                CacheManager.getInstance().getSharedPreferences().getString(LAST_NOTIFICATION, "");
-
-        Log.d(TAG,"lastNotification: " + lastNotification);
-
-        if (!lastNotification.equals("") && UserPreferencesManager.getInstance().isNotification()) {
-            Date lastNotificationDate = null;
-            try {
-                lastNotificationDate = CacheManager.DATE_FORMAT.parse(lastNotification);
-
-                Calendar lastNotificationCalendar = Calendar.getInstance();
-                lastNotificationCalendar.setTime(lastNotificationDate);
-
-                result = notificationTime.get(Calendar.DAY_OF_YEAR)
-                        > lastNotificationCalendar.get(Calendar.DAY_OF_YEAR);
-
-                Log.d(TAG,"isNotificationTime result: " + result);
-
-            } catch (ParseException e) {
-                Log.e(TAG, "Error parsing date " + lastNotification + ": " + e.getMessage(), e);
-            }
-        }
-
-        return result;
     }
 
     public void fireNotication(String title, String description) {

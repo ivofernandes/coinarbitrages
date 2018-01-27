@@ -52,7 +52,6 @@ public class ForecastInterfaceManager {
     
     // Receivers
     public void receives3HourForecast(JSONObject forecastCurrent, JSONObject forecast3h,
-                                      double latitude, double longitude,
                                       DataManager.WeatherRequestType weatherRequestType,
                                       Date lastUpdate) throws JSONException {
         this.lastUpdate = lastUpdate;

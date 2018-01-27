@@ -1,12 +1,9 @@
 package com.coinarbritages.coinarbritages.manager;
 
-import android.content.SharedPreferences;
 import android.os.Handler;
 
-import com.coinarbritages.coinarbritages.OpenWeatherMap.OpenWeatherRequest;
+import com.coinarbritages.coinarbritages.OpenWeatherMap.ExchangeDataRequest;
 import com.coinarbritages.coinarbritages.common.SharedResources;
-import com.coinarbritages.coinarbritages.common.configuration.CacheManager;
-import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
 import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 
 import org.json.JSONException;
@@ -46,15 +43,14 @@ public class DataManager {
     // Constants
     private final ForecastInterfaceManager forecastInterfaceManager = ForecastInterfaceManager.getInstance();
     private final SharedResources sharedResources = SharedResources.getInstance();
-    private final OpenWeatherRequest openWeatherRequest = OpenWeatherRequest.getInstance();
+    private final ExchangeDataRequest openWeatherRequest = ExchangeDataRequest.getInstance();
     private static final int REQUESTS_TIMEOUT = 60 * 1000;
 
     // Fields
     private Map<String,String> options = new HashMap<String,String>();
     private RequestState state = RequestState.DONE;
     private WeatherRequestType weatherRequestType;
-    private double latitude;
-    private double longitude;
+
 
     private JSONObject jsonCurrent = null;
     private JSONObject json3h = null;
@@ -84,52 +80,22 @@ public class DataManager {
         // Set global params
         this.weatherRequestType = weatherRequestType;
 
-        //TODO Create timeout for responses that put the state DONE
-
-        customHandler.postDelayed(new Runnable() {
-            public void run() {
-                state = RequestState.DONE;
-            }
-        }, REQUESTS_TIMEOUT);
-
-        //TODO responses only work if still in state response
-        //TODO requests when the state is already requesting will need to wait...
-
-        // Make the request
-        if(options.isEmpty()) {
-            addLocaleOption(options);
-        }
-
-        openWeatherRequest.request_current_3hours_daily(latitude,longitude, options,weatherRequestType);
+        openWeatherRequest.requestALlExchangeData(options, weatherRequestType);
     }
-
-    private void addLocaleOption(Map<String,String> options){
-        //TODO metric
-        //&units=metric
-        if(true || ConfigurationManager.getInstance().isMetric()){
-            options.put("units", "metric");
-        }
-    }
-
 
     public void response(String response, JSONObject json, String requestType,
-                         WeatherRequestType weatherRequestType, boolean dataFromCache,
+                         WeatherRequestType weatherRequestType,
                          Date lastUpdateDate) throws JSONException {
 
         this.lastUpdate = lastUpdateDate;
 
         // Store the jsons
-        if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_3_HOURS)) {
+        if(requestType.equals(ExchangeDataRequest.REQUEST_GDAX)) {
             this.json3h = json;
-        } else if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_DAILY)) {
+        } else if(requestType.equals(ExchangeDataRequest.REQUEST_DATA_DAILY)) {
             this.jsonDaily = json;
-        } else if(requestType.equals(OpenWeatherRequest.REQUEST_DATA_CURRENT)) {
+        } else if(requestType.equals(ExchangeDataRequest.REQUEST_DATA_CURRENT)) {
             this.jsonCurrent = json;
-        }
-
-        // cache the data
-        if(!dataFromCache) {
-            cacheData(response, requestType,latitude,longitude);
         }
 
         // Try process the requests
@@ -141,36 +107,6 @@ public class DataManager {
         }
     }
 
-    /**
-     * Insert data in android local cache
-     * @param response
-     * @param requestType
-     * @param latitude
-     * @param longitude
-     */
-    private void cacheData(String response, String requestType, double latitude, double longitude) {
-
-        String keyDate =
-                CacheManager.getPreferenceFor(requestType, CacheManager.SUFIX_DATE);
-        String keyLocation =
-                CacheManager.getPreferenceFor(requestType, CacheManager.SUFIX_LOCATION);
-        String keyData =
-                CacheManager.getPreferenceFor(requestType, CacheManager.SUFIX_DATA);
-
-        SharedPreferences sharedPreferences = CacheManager.getInstance().getSharedPreferences();
-
-        String locationString = latitude + "|" + longitude;
-        String dateString = CacheManager.DATE_FORMAT.format(new Date());
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(keyDate, dateString);
-        editor.putString(keyLocation, locationString);
-        editor.putString(keyData, response);
-
-        editor.commit();
-
-    }
-
     private void processRequests(WeatherRequestType weatherRequestType) throws JSONException {
         this.processCurrentAnd3hCount++;
 
@@ -178,7 +114,7 @@ public class DataManager {
         if(this.jsonCurrent != null && this.json3h != null){
             // Process the current request
 
-            forecastInterfaceManager.receives3HourForecast(this.jsonCurrent,this.json3h, latitude, longitude, weatherRequestType, lastUpdate);
+            forecastInterfaceManager.receives3HourForecast(this.jsonCurrent,this.json3h, weatherRequestType, lastUpdate);
 
             this.step3h = true;
 

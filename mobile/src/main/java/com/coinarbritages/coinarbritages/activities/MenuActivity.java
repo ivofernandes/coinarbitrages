@@ -22,13 +22,6 @@ public class MenuActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if(Log.getErrorVisualLog()){
-            MenuItem menuItem = menu.add("Log");
-            Intent intent = new Intent(MainActivity.getInstance(), LogActivity.class);
-            intent.putExtra("logList","all");
-            menuItem.setIntent(intent);
-        }
-
         return true;
     }
 
