@@ -1,18 +1,13 @@
 package com.coinarbritages.coinarbritages.OpenWeatherMap;
 
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
-import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.common.Log;
 
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,8 +40,8 @@ public class ExchangeDataRequest {
     /**
      * Make the requests to get the weather data
      */
-    public void requestALlExchangeData( Map<String,String> options,
-                                       DataManager.WeatherRequestType weatherRequestType){
+    public void requestAllExchangeData(Map<String,String> options,
+                                       DataManager.RequestType weatherRequestType){
 
         // Request GDAX
         Log.i(TAG, "Request GDAX data");
@@ -59,7 +54,7 @@ public class ExchangeDataRequest {
      * Request data for 3 hours interval
      */
     private void request(String requestDataType, boolean retry,
-                         DataManager.WeatherRequestType weatherRequestType) {
+                         DataManager.RequestType weatherRequestType) {
         // If have internet access
         if(sharedResources.haveInternetAccess()){
             makeRequest(requestDataType, weatherRequestType);
@@ -69,7 +64,7 @@ public class ExchangeDataRequest {
 
 
 
-    private void makeRequest(String requestType, DataManager.WeatherRequestType weatherRequestType){
+    private void makeRequest(String requestType, DataManager.RequestType weatherRequestType){
 
         // https://api.gdax.com/products/ETH-EUR/trades
         // https://api.kraken.com/0/public/Ticker?pair=ETHEUR
@@ -83,31 +78,25 @@ public class ExchangeDataRequest {
        }
     }
 
-    public void response(String response, String requestType,
-                         DataManager.WeatherRequestType weatherRequestType,
+    public void response(String response, String requestSource,
+                         DataManager.RequestType requestType,
                          Date lastUpdateDate){
 
-        Log.v(TAG, requestType + " weatherRequestType: " + weatherRequestType + " response: " + response);
+        Log.v(TAG, requestType + " request type: " + requestSource + " response: " + response);
 
-        if(response == null){
-            request(requestType, true, weatherRequestType); // retry
-        }
-
-        // 3 Hours requestALlExchangeData
-        if(requestType.equals(ExchangeDataRequest.REQUEST_GDAX)
-                || requestType.equals(ExchangeDataRequest.REQUEST_DATA_DAILY)
-                || requestType.equals(ExchangeDataRequest.REQUEST_DATA_CURRENT)){
+        // 3 Hours requestAllExchangeData
+        if(requestType.equals(ExchangeDataRequest.REQUEST_GDAX)){
             try {
-                JSONObject json = new JSONObject(response);
+                JSONArray json = new JSONArray(response);
                 if(validResponse(json,response)) {
-                    DataManager.getInstance().response(response, json, requestType,
-                            weatherRequestType, lastUpdateDate);
+                    DataManager.getInstance().responseGdax(response, json, requestSource,
+                            requestType, lastUpdateDate);
                 }else{
-                    Log.e(TAG, "Error getting data " + weatherRequestType + "for type " + requestType
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
                             + ", unexpected format");
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error getting data " + weatherRequestType + "for type " + requestType
+                Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
                         + ", data: " + e.getMessage(),e);
             }
         }
@@ -117,7 +106,7 @@ public class ExchangeDataRequest {
         }
     }
 
-    private boolean validResponse(JSONObject response, String jsonString) {
+    private boolean validResponse(JSONArray response, String jsonString) {
         if(response == null){
             return false;
         }

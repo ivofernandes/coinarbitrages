@@ -55,13 +55,6 @@
                     android:id="@+id/text3hours"
                     android:layout_gravity="right" />
 
-                <FrameLayout
-                    android:id="@+id/id3hours"
-                    android:layout_weight="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0px">
-
-                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -70,13 +63,6 @@
                     android:text="@string/textDaily"
                     android:id="@+id/textDaily"
                     android:layout_gravity="right" />
-
-                <FrameLayout
-                    android:id="@+id/idDaily"
-                    android:layout_weight="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_marginTop="25dp"/>
 
             </LinearLayout>
 

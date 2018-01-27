@@ -71,7 +71,7 @@ public class NotificationSchedulingService extends IntentService {
     public void sendNotification(){
         try {
 
-            DataManager.getInstance().requestAllData(DataManager.WeatherRequestType.NOTIFICATION);
+            DataManager.getInstance().requestAllData(DataManager.RequestType.NOTIFICATION);
         }catch (Exception e) {
             Log.e(TAG, "error trying to generate a weather notification: " + e.getMessage(), e);
             done();

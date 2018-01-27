@@ -23,12 +23,12 @@ public class RequestTask extends AsyncTask<String, String, String> {
 
     private final String requestType;
     private final ExchangeDataRequest openWeatherRequest;
-    private final DataManager.WeatherRequestType weatherRequestType;
+    private final DataManager.RequestType weatherRequestType;
 
     private String urlString = null;
 
     public RequestTask(String requestType, ExchangeDataRequest openWeatherRequest,
-                       DataManager.WeatherRequestType weatherRequestType) {
+                       DataManager.RequestType weatherRequestType) {
         this.requestType = requestType;
         this.openWeatherRequest = openWeatherRequest;
         this.weatherRequestType = weatherRequestType;

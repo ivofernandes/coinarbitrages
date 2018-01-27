@@ -3,7 +3,6 @@ package com.coinarbritages.coinarbritages;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.View;
@@ -22,6 +21,8 @@ import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 import com.coinarbritages.coinarbritages.manager.ForecastInterfaceManager;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.scheduler.SendNotificationManager;
+
+import org.json.JSONArray;
 
 /**
  * MainActivity 
@@ -74,13 +75,9 @@ public class MainActivity extends MenuActivity {
         final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
         forecastInterfaceManager.setForecastView(forecastPanel);
 
-        dataManager.requestAllData(DataManager.WeatherRequestType.UPDATE_VIEWS);
+        dataManager.requestAllData(DataManager.RequestType.UPDATE_VIEWS);
 
         initViews();
-
-        // Init activity
-
-        configureOrientation(getResources().getConfiguration());
 
         // Analytics
         try {
@@ -148,55 +145,13 @@ public class MainActivity extends MenuActivity {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        configureOrientation(newConfig);
-
-    }
-
-    private void configureOrientation(Configuration config) {
-
-        LinearLayout forecastView = (LinearLayout) findViewById(R.id.forecastView);
-
-        FrameLayout id3hours = (FrameLayout) findViewById(R.id.id3hours);
-        FrameLayout idDaily = (FrameLayout) findViewById(R.id.idDaily);
-
-        // Checks the orientation of the screen
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            forecastView.setOrientation(LinearLayout.HORIZONTAL);
-
-            LinearLayout.LayoutParams id3hoursLayoutParams = (LinearLayout.LayoutParams) id3hours.getLayoutParams();
-            id3hoursLayoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            id3hoursLayoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            id3hours.setLayoutParams(id3hoursLayoutParams);
-
-
-            LinearLayout.LayoutParams idDailyLayoutParams = (LinearLayout.LayoutParams) id3hours.getLayoutParams();
-            idDailyLayoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            idDailyLayoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            idDaily.setLayoutParams(idDailyLayoutParams);
-
-        } else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
-            forecastView.setOrientation(LinearLayout.VERTICAL);
-
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) id3hours.getLayoutParams();
-            params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            id3hours.setLayoutParams(params);
-
-            LinearLayout.LayoutParams idDailyLayoutParams = (LinearLayout.LayoutParams) id3hours.getLayoutParams();
-            idDailyLayoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            idDailyLayoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            idDaily.setLayoutParams(idDailyLayoutParams);
-        }
-    }
-
     public void setAppTitle(String appTitle) {
         if(appTitle != null && !appTitle.equals("")) {
             setTitle(appTitle);
         }
     }
 
+    public void showData(JSONArray gdax) {
+        loadingComplete();
+    }
 }

@@ -44,7 +44,6 @@ public class SimpleForecast3HoursUI extends SlidingItem {
 
     private int pagesNum;
 
-    // Cache for 3 hours data
 
     // 3 hours vars
     private JSONObject json3Hours = null;

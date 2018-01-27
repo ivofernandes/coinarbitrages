@@ -1,5 +1,6 @@
 package com.coinarbritages.coinarbritages.forecastView;
 
+import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.common.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -65,15 +66,14 @@ public class SimpleForecastUI {
      * @param response data with 3hours forecast
      * @throws JSONException
      */
-    public void show3HoursForecast(JSONObject response, Date lastUpdate) throws JSONException {
+    public void showExchangeData(JSONArray gdax, Date lastUpdate) throws JSONException {
 
         init();
         // clear before adding new components
         clear3HourView();
 
         // Add new components
-        viewForecast3hours.create3hViewFromJson(response, lastUpdate);
-        this.viewForecastDaily.createDailyFrom3h(response);
+        MainActivity.getInstance().showData(gdax);
     }
 
     /**

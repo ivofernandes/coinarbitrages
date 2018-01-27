@@ -6,6 +6,7 @@ import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 import com.coinarbritages.coinarbritages.forecastView.SimpleForecastUI;
 import com.coinarbritages.coinarbritages.scheduler.SendNotificationManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,23 +50,10 @@ public class ForecastInterfaceManager {
         // When receives the panel, pass it to the child panels
         simpleForecastUI.setForecastView(forecastView);
     }
-    
-    // Receivers
-    public void receives3HourForecast(JSONObject forecastCurrent, JSONObject forecast3h,
-                                      DataManager.WeatherRequestType weatherRequestType,
-                                      Date lastUpdate) throws JSONException {
-        this.lastUpdate = lastUpdate;
 
-        if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
-            simpleForecastUI.show3HoursForecast(forecast3h, this.lastUpdate);
-            simpleForecastUI.showCurrentForecast(forecastCurrent);
-        }else if(weatherRequestType.equals(DataManager.WeatherRequestType.NOTIFICATION)) {
-            sendNotificationManager.fireNotications(forecast3h);
-        }
-    }
 
-    public void receivesDailyForecast(JSONObject response, DataManager.WeatherRequestType weatherRequestType) throws JSONException {
-        if(weatherRequestType.equals(DataManager.WeatherRequestType.UPDATE_VIEWS)) {
+    public void receivesDailyForecast(JSONObject response, DataManager.RequestType weatherRequestType) throws JSONException {
+        if(weatherRequestType.equals(DataManager.RequestType.UPDATE_VIEWS)) {
             simpleForecastUI.showDailyForecast(response);
         }
     }
@@ -82,4 +70,5 @@ public class ForecastInterfaceManager {
     public JSONObject getDailyPrediction(int position) {
         return simpleForecastUI.getDailyPrediction(position);
     }
+
 }
