@@ -1,12 +1,10 @@
 package com.coinarbritages.coinarbritages;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
-import com.coinarbritages.coinarbritages.manager.ForecastInterfaceManager;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.scheduler.SendNotificationManager;
 
@@ -41,7 +38,6 @@ public class MainActivity extends MenuActivity {
     private DataManager dataManager = DataManager.getInstance();
 
     //  User Interface
-    private ForecastInterfaceManager forecastInterfaceManager = ForecastInterfaceManager.getInstance();
     private LayoutManager layoutManager = LayoutManager.getInstance();
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
     private SendNotificationManager sendNotificationManager = SendNotificationManager.getInstance();
@@ -73,7 +69,6 @@ public class MainActivity extends MenuActivity {
 
         // Start Forecast UI manager
         final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
-        forecastInterfaceManager.setForecastView(forecastPanel);
 
         dataManager.requestAllData(DataManager.RequestType.UPDATE_VIEWS);
 

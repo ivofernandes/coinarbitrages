@@ -84,8 +84,8 @@ public class ExchangeDataRequest {
 
         Log.v(TAG, requestType + " request type: " + requestSource + " response: " + response);
 
-        // 3 Hours requestAllExchangeData
-        if(requestType.equals(ExchangeDataRequest.REQUEST_GDAX)){
+        //  requestAllExchangeData
+        if(requestType.equals(DataManager.RequestType.UPDATE_VIEWS)){
             try {
                 JSONArray json = new JSONArray(response);
                 if(validResponse(json,response)) {

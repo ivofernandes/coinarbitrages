@@ -3,23 +3,19 @@ package com.coinarbritages.coinarbritages.scheduler;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 
 import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.common.Log;
 
 import com.coinarbritages.coinarbritages.MainActivity;
-import com.coinarbritages.coinarbritages.OpenWeatherMap.processors.Json3HoursProcessor;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
-import com.coinarbritages.coinarbritages.common.configuration.UserPreferencesManager;
 import com.coinarbritages.coinarbritages.manager.WeatherConditionManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,17 +35,11 @@ public class SendNotificationManager {
         return instance;
     }
 
-    public static final String LAST_NOTIFICATION = "LAST_NOTIFICATION";
-
-    // Notification ID to allow for future updates
-
     // Vibration pattern
     private long[] mVibratePattern = { 0, 200};
 
     // Fields
     private SharedResources sharedResources = SharedResources.getInstance();
-
-    private Json3HoursProcessor processor = new Json3HoursProcessor();
 
     private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
@@ -61,124 +51,24 @@ public class SendNotificationManager {
 
         Log.d(TAG, "fireNotications json " + json3h);
 
-        try {
-            Calendar currentDate = Calendar.getInstance();
+        generatePriceNotification();
 
-            Log.d(TAG, "currentDate " + currentDate.getTime());
-
-            // try notification for today,
-            // for cases when the app was installed after 00:00 and before the user going to sleep
-            boolean todayNotification = validateRain(json3h, currentDate, 0,
-                    sharedResources.resolveString(R.string.notification_today_expect));
-
-            // if today notification is not fired, then try for tomorrow
-            if(!todayNotification) {
-                validateRain(json3h, currentDate, 1, sharedResources.resolveString(R.string.notification_tomorrow_expect));
-            }
-
-            NotificationSchedulingService.getInstance().done();
-        } catch (JSONException e) {
-            Log.e(TAG,"error firing notification, reading json data: " + e.getMessage(),e);
-            e.getStackTrace()[0].getClassName();
-
-        }
-    }
-
-    /**
-     *
-     * @param json3h
-     * @param currentDate
-     * @param nextDay defines the day where will validate if rains:
-     *          - 0, today
-     *          - 1, tomorrow
-     * @param whenExpect
-     * @return if the notification was fired
-     * @throws JSONException
-     */
-    private boolean validateRain(JSONObject json3h, Calendar currentDate,int nextDay, String whenExpect) throws JSONException {
-
-        if(!json3h.has("list")){
-            Log.e(TAG,"not found list in json: "+ json3h);
-        }
-
-        JSONArray list = json3h.getJSONArray("list");
-
-        // precipitation tomorrow counter
-        double precipitation = 0;
-        WeatherConditionManager.WeatherCondition weatherNotification = WeatherConditionManager.WeatherCondition.CLOUDS;
-        String idNotification = "";
-        String weatherDescription = "";
-        Calendar notificationTime = null;
-
-        for (int i=0 ; i<list.length() ; i++){
-            JSONObject prediction = list.getJSONObject(i);
-            long timeJson = prediction.getLong("dt")* 1000;
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date(timeJson));
-
-            int daysDiff = calendar.get(Calendar.DAY_OF_MONTH) - currentDate.get(Calendar.DAY_OF_MONTH);
-
-            // Skip to today/tomorrow
-            if(daysDiff < nextDay){
-                continue;
-            }
-
-            // Stop when pass today/tomorrow
-            else if(daysDiff > nextDay){
-                break;
-            }
-            double rain = processor.getRain(prediction);
-            String id = processor.getWeatherId(prediction,rain);
-            WeatherConditionManager.WeatherCondition weatherCondition =
-                    WeatherConditionManager.getInstance().getWeatherConditionById(id);
-
-            // If the
-            if(weatherCondition != null && !weatherNotification.equals(weatherCondition)) {
-
-                weatherNotification = WeatherConditionManager.getInstance().moreImportantCondition(
-                        weatherNotification, weatherCondition);
-
-                if(weatherNotification.equals(weatherCondition)) {
-                    idNotification = id;
-                    weatherDescription = processor.getWeatherDescription(prediction, rain, 0, 3, weatherCondition);
-                    notificationTime = calendar;
-                }
-            }
-
-        }
-
-        /*
-        weatherNotification = WeatherConditionManager.WeatherCondition.RAIN_HEAVY;
-        weatherDescription = "chuva teste";
-        notificationTime = Calendar.getInstance();
-        notificationTime.setTime(new Date());
-        notificationTime.set(Calendar.DAY_OF_YEAR, notificationTime.get(Calendar.DAY_OF_YEAR)+1);
-*/
-
-        Log.d(TAG, "weatherNotification " + weatherNotification);
-
-        return generateRainNotification(weatherNotification, idNotification, weatherDescription, notificationTime,whenExpect,nextDay);
+        NotificationSchedulingService.getInstance().done();
 
     }
 
-    private boolean generateRainNotification(WeatherConditionManager.WeatherCondition rain,
-                                             String idNotification, String weatherDescription,
-                                             Calendar notificationTime,
-                                             String whenExpect, int nextDay) {
-        boolean weatherNotification = !rain.equals(WeatherConditionManager.WeatherCondition.CLOUDS);
+    private boolean generatePriceNotification() {
 
-        if(weatherNotification) {
-            // Generate the notification
-            String title = sharedResources.resolveString(R.string.notification_title);
+        // Generate the notification
+        String title = sharedResources.resolveString(R.string.notification_title);
 
-            String description = whenExpect + " " + weatherDescription;
+        String description = "HODL";
 
-            fireNotication(title, description);
+        fireNotication(title, description);
 
-            return true;
+        return true;
 
-        }
-        return false;
+
     }
 
     public void fireNotication(String title, String description) {

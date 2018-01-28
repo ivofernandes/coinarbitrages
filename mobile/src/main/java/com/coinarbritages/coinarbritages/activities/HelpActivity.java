@@ -1,21 +1,17 @@
 package com.coinarbritages.coinarbritages.activities;
 
-import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.coinarbritages.coinarbritages.OpenWeatherMap.processors.JsonProcessor;
 import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 
 public class HelpActivity extends ActionBarActivity {
 
-    private SharedResources sharedResources = SharedResources.getInstance();
     private LayoutManager layoutManager = LayoutManager.getInstance();
     private LinearLayout panel;
 
@@ -53,50 +49,8 @@ public class HelpActivity extends ActionBarActivity {
         TextView apparentTemperatureDescription = (TextView) findViewById(R.id.apparentTemperatureDescription);
         apparentTemperatureDescription.setTextColor(layoutManager.getForegroundColor());
 
-        // Generate panel
-        createColorMeaningDescription(colorMeaningDescriptionPanel);
-
 
     }
 
-    private void createColorMeaningDescription(LinearLayout colorMeaningDescriptionPanel) {
 
-
-        String [] texts = {
-                " <-20º",
-                " [-20º ... -15º]",
-                " [-15º ... -10º]",
-                " [-10º ...  -5º]",
-                " [-5º  ...   0º]",
-                " [0º   ...  +5º]",
-                " [+5º  ... +10º]",
-                " [+10º ... +15º]",
-                " [+15º ... +20º]",
-                " [+20º ... +25º]",
-                " >+25º",};
-
-        for(int i=10 ; i>=0 ; i--) {
-            ImageView color = JsonProcessor.createImage(50);
-            double ratio = (double)i / 10;
-            color.setBackgroundColor(layoutManager.colorForWeather(ratio));
-
-            TextView textView = new TextView(sharedResources.getContext());
-            textView.setText(texts[i]);
-            textView.setTypeface(Typeface.MONOSPACE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textView.getLayoutParams();
-            if(params == null){
-                params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-            }
-
-            params.setMargins(20, 0, 0, 0);
-
-            LinearLayout colorSample = new LinearLayout(sharedResources.getContext());
-            colorSample.setOrientation(LinearLayout.HORIZONTAL);
-            colorSample.addView(color);
-            colorSample.addView(textView);
-
-            colorMeaningDescriptionPanel.addView(colorSample);
-        }
-    }
 }

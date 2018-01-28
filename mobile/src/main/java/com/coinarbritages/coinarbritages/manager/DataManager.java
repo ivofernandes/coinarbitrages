@@ -42,7 +42,6 @@ public class DataManager {
     };
 
     // Constants
-    private final ForecastInterfaceManager forecastInterfaceManager = ForecastInterfaceManager.getInstance();
     private final SharedResources sharedResources = SharedResources.getInstance();
     private final ExchangeDataRequest openWeatherRequest = ExchangeDataRequest.getInstance();
 
@@ -67,10 +66,6 @@ public class DataManager {
         step3h = false;
         stepDaily = false;
 
-        if(weatherRequestType.equals(RequestType.UPDATE_VIEWS)) {
-            forecastInterfaceManager.reset();
-        }
-
         openWeatherRequest.requestAllExchangeData(options, weatherRequestType);
     }
 
@@ -86,11 +81,6 @@ public class DataManager {
         // Update the wake up control
         NotificationSchedulingService.getInstance().updated(requestSource);
 
-    }
-
-    private void processDaily(RequestType weatherRequestType) throws JSONException {
-
-        forecastInterfaceManager.receivesDailyForecast(this.jsonDaily, weatherRequestType);
     }
 
     /**
