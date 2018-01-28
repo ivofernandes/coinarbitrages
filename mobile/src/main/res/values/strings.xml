@@ -10,7 +10,7 @@
     <string name="action_help">Help</string>
 
     <!-- Notification -->
-    <string name="notification_title">Thunderwarn</string>
+    <string name="notification_title">Coin Arbitrages</string>
     <string name="notification_tomorrow_expect">Tomorrow expect</string>
     <string name="notification_today_expect">Today expect</string>
     <string name="notification_rain">rain</string>
@@ -53,5 +53,8 @@
     <string name="apparent_temperature_description">We live in a world of perceptions, everything is relative, so we use the apparent temperature also known as \'fells like\' as the default temperature values that are shown in this app. This calculated value takes in consideration the thermometer temperature, humidity and wind speed</string>
     <string name="colorMeaning">Color Meaning</string>
     <string name="colorMeaningDescription">The color of the predictions that you will see in this app will change depending on the apparent temperature, the idea is that with practice, you don\'t even will need to read anything to know if will be harm or cold, in the following table you can see when each color appear depending to the minimum apparent temperature:</string>
+    <string name="alerts">Alerts</string>
+    <string name="arbitrageMonitor">Arbitrage</string>
+    <string name="directTrade">Direct Trade</string>
 
 </resources>

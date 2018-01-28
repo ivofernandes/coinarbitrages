@@ -1,7 +1,5 @@
 package com.coinarbritages.coinarbritages.common.configuration;
 
-import com.coinarbritages.coinarbritages.common.Log;
-
 /**
  * Created by ivofernandes on 27/07/15.
  */
@@ -17,9 +15,8 @@ public class UserPreferencesManager {
     }
 
     // Fields
-    private boolean apparentTemperature = true;
+    private boolean isDirectTrade = true;
     private boolean notification = true;
-    private boolean useGps = true;
 
     /**
      * Load data from local cache
@@ -28,30 +25,25 @@ public class UserPreferencesManager {
         this.notification = CacheManager.getInstance().getBoolean(
                 CacheManager.PREFERENCE_SETTINGS_NOTIFICATION, true);
 
-        this.apparentTemperature = CacheManager.getInstance().getBoolean(
-                CacheManager.PREFERENCE_SETTINGS_APPARENT_TEMPERATURE, true);
+        this.isDirectTrade = CacheManager.getInstance().getBoolean(
+                CacheManager.PREFERENCE_SETTINGS_DIRECT_TRADE, true);
 
-        this.useGps = CacheManager.getInstance().getBoolean(
-                CacheManager.PREFERENCE_SETTINGS_USE_GPS, true);
+
     }
 
-    public boolean isApparentTemperature() {
-        return apparentTemperature;
+    public boolean isDirectTrade() {
+        return isDirectTrade;
     }
 
     public boolean isNotification() {
         return notification;
     }
 
-    public boolean isUseGps() {
-        return useGps;
-    }
+    public void setDirectTrade(boolean directTrade) {
+        this.isDirectTrade = directTrade;
 
-    public void setApparentTemperature(boolean apparentTemperature) {
-        this.apparentTemperature = apparentTemperature;
-
-        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_APPARENT_TEMPERATURE,
-                this.apparentTemperature);
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_DIRECT_TRADE,
+                this.isDirectTrade);
     }
 
     public void setNotification(boolean notification) {
@@ -61,10 +53,4 @@ public class UserPreferencesManager {
                 this.notification);
     }
 
-    public void setUseGps(boolean useGps) {
-        this.useGps = useGps;
-
-        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_USE_GPS,
-                this.useGps);
-    }
 }

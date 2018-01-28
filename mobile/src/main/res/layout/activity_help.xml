@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/apparent_temperature"
-                android:id="@+id/apparentTemperature"
+                android:id="@+id/directTrade"
                 android:layout_marginTop="10dp" />
 
             <TextView

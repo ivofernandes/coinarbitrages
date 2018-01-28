@@ -56,12 +56,12 @@ public class SettingsActivity extends ActionBarActivity {
         //http://developer.android.com/guide/topics/ui/controls/pickers.html
 
         // Apparent temperature
-        Switch apparentTemperatureSwitch = (Switch) findViewById(R.id.switchApparentTemperature);
-        apparentTemperatureSwitch.setTextColor(layoutManager.getForegroundColor());
-        apparentTemperatureSwitch.setChecked(userPreferencesManager.isApparentTemperature());
-        apparentTemperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Switch directTradeSwitch = (Switch) findViewById(R.id.switchDirectTrade);
+        directTradeSwitch.setTextColor(layoutManager.getForegroundColor());
+        directTradeSwitch.setChecked(userPreferencesManager.isDirectTrade());
+        directTradeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                UserPreferencesManager.getInstance().setApparentTemperature(isChecked);
+                UserPreferencesManager.getInstance().setDirectTrade(isChecked);
             }
         });
 

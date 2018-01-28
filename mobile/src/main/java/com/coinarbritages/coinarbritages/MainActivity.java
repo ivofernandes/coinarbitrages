@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
-import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.coinarbritages.coinarbritages.activities.MenuActivity;
@@ -20,9 +19,6 @@ import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManag
 import com.coinarbritages.coinarbritages.common.configuration.LayoutManager;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.scheduler.SendNotificationManager;
-
-import org.json.JSONArray;
-
 /**
  * MainActivity 
  *
@@ -70,13 +66,15 @@ public class MainActivity extends MenuActivity {
         SharedResources.getInstance().setContext(getApplicationContext());
 
         // Start Forecast UI manager
-        final LinearLayout forecastPanel = (LinearLayout) findViewById(R.id.forecastView);
+        final LinearLayout mainContainer = (LinearLayout) findViewById(R.id.mainContainer);
 
         dataManager.requestAllData(DataManager.RequestType.UPDATE_VIEWS);
 
         initViews();
 
         // Analytics
+        /*
+        UNCOMMENT TO ADD AD
         try {
             ((AnalyticsApplication) getApplication()).startTracking();
 
@@ -87,6 +85,7 @@ public class MainActivity extends MenuActivity {
             Log.e(TAG,"error initing ads and analytics",e);
         }
 
+        */
         Log.d(TAG, "onResume END <");
     }
 
@@ -102,11 +101,11 @@ public class MainActivity extends MenuActivity {
     }
 
     public void initLabels() {
-        TextView text3hours = (TextView) findViewById(R.id.text3hours);
-        TextView textDaily = (TextView) findViewById(R.id.textDaily);
+        TextView textAlerts = (TextView) findViewById(R.id.textAlerts);
+        TextView textArbitrageMonitor = (TextView) findViewById(R.id.textArbitrageMonitor);
 
-        text3hours.setTextColor(layoutManager.getSmoothForegroundColor());
-        textDaily.setTextColor(layoutManager.getSmoothForegroundColor());
+        textAlerts.setTextColor(layoutManager.getSmoothForegroundColor());
+        textArbitrageMonitor.setTextColor(layoutManager.getSmoothForegroundColor());
     }
 
     private void initViews() {
@@ -148,7 +147,19 @@ public class MainActivity extends MenuActivity {
         }
     }
 
-    public void showData(ExchangeDataProcessor gdax) {
+    public void showData(ExchangeDataProcessor processor) {
+
+        LinearLayout alertsContainer = (LinearLayout) findViewById(R.id.alertsContainer);
+        alertsContainer.removeAllViews();
+
+        TextView textView = new TextView(this);
+        textView.setText(processor.getArbitrageAlerts());
+        textView.setTextColor(layoutManager.getSmoothForegroundColor());
+        alertsContainer.addView(textView);
+
+
+
+
         loadingComplete();
     }
 }

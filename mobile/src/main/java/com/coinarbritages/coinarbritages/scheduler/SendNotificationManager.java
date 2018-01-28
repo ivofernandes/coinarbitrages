@@ -3,6 +3,8 @@ package com.coinarbritages.coinarbritages.scheduler;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
 import com.coinarbritages.coinarbritages.R;
 import com.coinarbritages.coinarbritages.common.Log;
@@ -29,7 +31,11 @@ public class SendNotificationManager {
     }
 
     // Vibration pattern
-    private long[] mVibratePattern = { 0, 200};
+    private long[] mVibratePattern = { 0, 200,
+            1000,1000,1000,1000,1000,1000,1000,1000,1000,
+            1000,1000,1000,1000,1000,1000,1000,1000,1000,
+            1000,1000,1000,1000,1000,1000,1000,1000,1000
+    };
 
     // Fields
     private SharedResources sharedResources = SharedResources.getInstance();
@@ -73,6 +79,8 @@ public class SendNotificationManager {
         PendingIntent intent = PendingIntent.getActivity(sharedResources.getContext(), 0,
                 notificationIntent, 0);
 
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         Notification.Builder notificationBuilder = new Notification.Builder(
                 sharedResources.getContext())
                 .setTicker(title)
@@ -81,7 +89,8 @@ public class SendNotificationManager {
                 .setVibrate(mVibratePattern)
                 .setContentTitle(title)
                 .setContentIntent(intent)
-                .setContentText(description);
+                .setContentText(description)
+                .setSound(alarmSound);
 
         SharedResources.getInstance().getNotificationManager().notify(SharedResources.RAIN_NOTIFICATION_ID,
                 notificationBuilder.build());

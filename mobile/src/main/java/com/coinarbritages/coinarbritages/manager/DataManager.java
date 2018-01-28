@@ -89,8 +89,6 @@ public class DataManager {
 
             if(RequestType.UPDATE_VIEWS.equals(requestType)) {
                 MainActivity.getInstance().showData(processor);
-
-                NotificationSchedulingService.getInstance().updated(processor);
             }else{
                 // Update the wake up control
                 NotificationSchedulingService.getInstance().updated(processor);

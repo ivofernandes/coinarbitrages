@@ -29,7 +29,7 @@ public class CacheManager {
     // Cache Constants Settings
 
     public static final String PREFERENCE_SETTINGS_NOTIFICATION = "SETTINGS_NOTIFICATION";
-    public static final String PREFERENCE_SETTINGS_APPARENT_TEMPERATURE = "SETTINGS_APPARENT_TEMPERATURE";
+    public static final String PREFERENCE_SETTINGS_DIRECT_TRADE = "SETTINGS_APPARENT_TEMPERATURE";
     public static final String PREFERENCE_SETTINGS_USE_GPS = "SETTINGS_USE_GPS";
 
     public static final String PREFERENCE_LOCATION_USE_GPS = "SETTINGS_NOTIFICATION";

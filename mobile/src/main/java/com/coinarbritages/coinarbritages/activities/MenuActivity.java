@@ -44,20 +44,6 @@ public class MenuActivity extends ActionBarActivity {
             return true;
         }
 
-        //TODO Location change
-        // Remember that the objective of the app is too avoid user to get wet,
-        // and forget the clothes outside at the rain,
-        // so maybe the change of the location must be a temporary and then return to GPS
-        /*
-        if( id == R.id.action_change_location){
-            Intent intent = new Intent(MainActivity.getInstance(), ChangeLocationActivity.class);
-            MainActivity.getInstance().startActivity(intent);
-
-        }
-        */
-
-
-
         return super.onOptionsItemSelected(item);
     }
 }

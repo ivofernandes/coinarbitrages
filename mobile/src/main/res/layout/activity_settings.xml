@@ -53,14 +53,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/apparent_temperature"
+                    android:text="@string/directTrade"
                     android:id="@+id/apparentTemperatureText"
                     android:singleLine="true"
                     android:gravity="left" />
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/switchApparentTemperature"
+                    android:id="@+id/switchDirectTrade"
                     android:gravity="right"
                     android:textOn="@string/on"
                     android:textOff="@string/off" />

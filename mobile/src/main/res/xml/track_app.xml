@@ -8,6 +8,5 @@
     <screenName name="com.coinarbritages.coinarbritages.activities.DetailsActivity">Details</screenName>
     <screenName name="com.coinarbritages.coinarbritages.activities.HelpActivity">Help</screenName>
     <screenName name="com.coinarbritages.coinarbritages.activities.SettingsActivity">Settings</screenName>
-    <screenName name="com.coinarbritages.coinarbritages.activities.ChangeLocationActivity">Change Location</screenName>
 
 </resources>
