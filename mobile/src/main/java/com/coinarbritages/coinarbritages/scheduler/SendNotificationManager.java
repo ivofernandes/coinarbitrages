@@ -10,14 +10,7 @@ import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.common.configuration.ConfigurationManager;
-import com.coinarbritages.coinarbritages.manager.WeatherConditionManager;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Calendar;
-import java.util.Date;
+import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
 
 /**
  * Created by ivofernandes on 18/10/15.
@@ -45,11 +38,10 @@ public class SendNotificationManager {
 
     /**
      * Receives a 3h json and generate the notifications that it should produce
-     * @param json3h
+     * @param processor
      */
-    public void fireNotications(JSONObject json3h){
+    public void fireNotications(ExchangeDataProcessor processor){
 
-        Log.d(TAG, "fireNotications json " + json3h);
 
         generatePriceNotification();
 

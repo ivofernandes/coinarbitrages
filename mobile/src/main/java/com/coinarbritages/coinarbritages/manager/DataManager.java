@@ -2,7 +2,6 @@ package com.coinarbritages.coinarbritages.manager;
 
 import com.coinarbritages.coinarbritages.MainActivity;
 import com.coinarbritages.coinarbritages.OpenWeatherMap.ExchangeDataRequest;
-import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 
 import org.json.JSONArray;
@@ -29,95 +28,74 @@ public class DataManager {
         return instance;
     }
 
-    public void responseGdax(String response, JSONArray json, String requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.gdax = json;
-
-        processRequests(requestType,requestSource);
-    }
-
     // Enums
     public enum RequestType {
         UPDATE_VIEWS, // Request called by the user, refresh all views
         NOTIFICATION, // Request to send a notifications
     };
 
+    public enum RequestSource{
+        GDAX("https://api.gdax.com/products/ETH-EUR/trades"),
+        Kraken("https://api.kraken.com/0/public/Ticker?pair=ETHEUR");
+
+        private String url;
+
+        RequestSource(String url){
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+    }
+
     // Constants
-    private final SharedResources sharedResources = SharedResources.getInstance();
-    private final ExchangeDataRequest openWeatherRequest = ExchangeDataRequest.getInstance();
+    private final ExchangeDataRequest exchangeDataRequest = ExchangeDataRequest.getInstance();
 
     // Fields
     private Map<String,String> options = new HashMap<String,String>();
 
-
-    private JSONObject jsonDaily = null;
-
     private JSONArray gdax = null;
-
-    private boolean step3h = false;
-    private boolean stepDaily = false;
-    private Date lastUpdate = null;
+    private JSONObject kraken = null;
 
 
     // Actions
-    public void requestAllData(RequestType weatherRequestType) {
-
-        // Reset vars
-        jsonDaily = null;
-        step3h = false;
-        stepDaily = false;
-
-        openWeatherRequest.requestAllExchangeData(options, weatherRequestType);
+    public void requestAllData(RequestType requestType) {
+        exchangeDataRequest.requestAllExchangeData(requestType);
     }
 
-    private void processRequests(RequestType requestType, String requestSource) throws JSONException {
+    // Responses
 
+
+    public void responseGDAX(String response, JSONArray json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
+        this.gdax = json;
+
+        processRequests(requestType,requestSource);
+    }
+
+
+
+    public void responseKraken(String response, JSONObject json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
+        this.kraken = json;
+
+        processRequests(requestType,requestSource);
+    }
+
+    private void processRequests(RequestType requestType, RequestSource requestSource) throws JSONException {
         // If got all the data go ahead
-        if(this.gdax != null){
-            // Process the current request
 
-            MainActivity.getInstance().showData(this.gdax);
+        if(this.gdax != null && this.kraken != null){
+            ExchangeDataProcessor processor = new ExchangeDataProcessor(this.gdax, this.kraken);
+
+            if(RequestType.UPDATE_VIEWS.equals(requestType)) {
+                MainActivity.getInstance().showData(processor);
+
+                NotificationSchedulingService.getInstance().updated(processor);
+            }else{
+                // Update the wake up control
+                NotificationSchedulingService.getInstance().updated(processor);
+            }
         }
-
-        // Update the wake up control
-        NotificationSchedulingService.getInstance().updated(requestSource);
-
-    }
-
-    /**
-     * Verify if the current date plus the minutes is before the date passed by param
-     * @param dateParam
-     * @param minutes
-     * @return
-     */
-    public static boolean insideDateThreshold(Date dateParam, int minutes) {
-        Date date = new Date();
-
-        int second = 1000;
-        int minute = 60 * second;
-
-        long threshold = minute * minutes;
-        date.setTime(date.getTime() - threshold);
-
-        boolean result = date.before(dateParam);
-        return result;
-    }
-
-    /**
-     * Verify if the current date plus the minutes is before the date passed by param
-     * @param date1
-     * @param minutes
-     * @return
-     */
-    public static boolean insideDateThreshold(Date date1, Date date2,int minutes) {
-
-        int second = 1000;
-        int minute = 60 * second;
-
-        long threshold = minute * minutes;
-        date2.setTime(date2.getTime() - threshold);
-
-        boolean result = date2.before(date1);
-        return result;
     }
 
 }

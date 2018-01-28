@@ -6,9 +6,9 @@ import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Created by Ivo on 20-06-2015.
@@ -26,92 +26,77 @@ public class ExchangeDataRequest {
 
     private ExchangeDataRequest(){}
 
-
     // Constants
     public static final String TAG = "ExchangeDataRequest";
-    public static final String REQUEST_GDAX = "GDAX";
-    public static final String REQUEST_DATA_DAILY = "forecast/daily";
-    public static final String REQUEST_DATA_CURRENT = "weather";
-
 
     private SharedResources sharedResources = SharedResources.getInstance();
-
 
     /**
      * Make the requests to get the weather data
      */
-    public void requestAllExchangeData(Map<String,String> options,
-                                       DataManager.RequestType weatherRequestType){
+    public void requestAllExchangeData(DataManager.RequestType requestType){
 
         // Request GDAX
         Log.i(TAG, "Request GDAX data");
-        request(REQUEST_GDAX, false, weatherRequestType);
+        request(DataManager.RequestSource.GDAX,  requestType);
+
+        Log.i(TAG, "Request kraken data");
+        request(DataManager.RequestSource.Kraken, requestType);
 
     }
 
-
-    /**
-     * Request data for 3 hours interval
-     */
-    private void request(String requestDataType, boolean retry,
+    private void request(DataManager.RequestSource requestSource,
                          DataManager.RequestType weatherRequestType) {
         // If have internet access
         if(sharedResources.haveInternetAccess()){
-            makeRequest(requestDataType, weatherRequestType);
+            makeRequest(requestSource, weatherRequestType);
         }
-
     }
 
+    private void makeRequest(DataManager.RequestSource requestSource, DataManager.RequestType weatherRequestType){
 
+        if(requestSource != null) {
+            String url = requestSource.getUrl();
 
-    private void makeRequest(String requestType, DataManager.RequestType weatherRequestType){
-
-        // https://api.gdax.com/products/ETH-EUR/trades
-        // https://api.kraken.com/0/public/Ticker?pair=ETHEUR
-        if(requestType != null) {
-            String url = "https://api.gdax.com/products/ETH-EUR/trades";
-
-            RequestTask requestTask = new RequestTask(requestType, this,weatherRequestType);
+            RequestTask requestTask = new RequestTask(requestSource, this,weatherRequestType);
 
             requestTask.execute(url);
 
        }
     }
 
-    public void response(String response, String requestSource,
+    public void response(String response, DataManager.RequestSource requestSource,
                          DataManager.RequestType requestType,
                          Date lastUpdateDate){
 
         Log.v(TAG, requestType + " request type: " + requestSource + " response: " + response);
 
-        //  requestAllExchangeData
-        if(requestType.equals(DataManager.RequestType.UPDATE_VIEWS)){
-            try {
+        try {
+            if(requestSource.equals(DataManager.RequestSource.GDAX)) {
                 JSONArray json = new JSONArray(response);
-                if(validResponse(json,response)) {
-                    DataManager.getInstance().responseGdax(response, json, requestSource,
+                if (json != null) {
+                    DataManager.getInstance().responseGDAX(response, json, requestSource,
                             requestType, lastUpdateDate);
-                }else{
+                } else {
                     Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
                             + ", unexpected format");
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
-                        + ", data: " + e.getMessage(),e);
+            }else if(requestSource.equals(DataManager.RequestSource.Kraken)){
+                JSONObject json = new JSONObject(response);
+                if (json != null) {
+                    DataManager.getInstance().responseKraken(response, json, requestSource,
+                            requestType, lastUpdateDate);
+                } else {
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                            + ", unexpected format");
+                }
             }
-        }
-
-        else{
-            Log.e(TAG, "Unknown requestAllData type: " + requestType);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                    + ", data: " + e.getMessage(),e);
         }
     }
 
-    private boolean validResponse(JSONArray response, String jsonString) {
-        if(response == null){
-            return false;
-        }
 
-        return true;
-    }
 
 }

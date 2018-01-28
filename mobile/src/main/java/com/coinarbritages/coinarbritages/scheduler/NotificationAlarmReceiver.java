@@ -75,8 +75,8 @@ public class NotificationAlarmReceiver extends WakefulBroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        // Set the alarm's trigger to the next 5 minutes
-        calendar.add(Calendar.MINUTE, 5);
+        // Set the alarm's trigger to the next 30 seconds
+        calendar.add(Calendar.SECOND, 30);
 
         Log.d(TAG, "setting alarm to the time: " + calendar.getTime());
 
@@ -84,7 +84,7 @@ public class NotificationAlarmReceiver extends WakefulBroadcastReceiver {
         alarmMgr.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                calendar.getTimeInMillis(),
                 alarmIntent);
 
         // Enable {@code NotificationBootReceiver} to automatically restart the alarm when the

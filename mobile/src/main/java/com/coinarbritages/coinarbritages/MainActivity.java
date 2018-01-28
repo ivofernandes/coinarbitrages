@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
+import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.coinarbritages.coinarbritages.activities.MenuActivity;
@@ -146,7 +148,7 @@ public class MainActivity extends MenuActivity {
         }
     }
 
-    public void showData(JSONArray gdax) {
+    public void showData(ExchangeDataProcessor gdax) {
         loadingComplete();
     }
 }

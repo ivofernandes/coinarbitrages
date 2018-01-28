@@ -4,9 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.coinarbritages.coinarbritages.common.Log;
-
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
+import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,9 +31,7 @@ public class NotificationSchedulingService extends IntentService {
     // Fields
     private Intent intent;
 
-    private DataManager weatherDataManager = DataManager.getInstance();
-
-    private Set<String> updateRequestType = new HashSet<String>();
+    private Set<DataManager.RequestSource> updateRequestType = new HashSet<>();
 
     public NotificationSchedulingService() {
         super("NotificationSchedulingService");
@@ -43,18 +41,21 @@ public class NotificationSchedulingService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        try {
-            this.intent = intent;
+        this.intent = intent;
+        start();
+    }
 
+    public void start() {
+        try {
+
+            Thread.sleep(30 * 1000); // Wait 30 seconds to repeat
             SharedResources.getInstance().init(this.getApplicationContext());
 
             Log.d(TAG, "start update/notification");
 
             clear();
 
-            sendNotification();
-
-            Thread.sleep(2 * 60 * 1000); // Wait two minutes until it's done
+            DataManager.getInstance().requestAllData(DataManager.RequestType.NOTIFICATION);
 
             Log.d(TAG, "end start update/notification");
         }catch (Exception e){
@@ -68,10 +69,10 @@ public class NotificationSchedulingService extends IntentService {
         updateRequestType.clear();
     }
 
-    public void sendNotification(){
+    public void sendNotification(ExchangeDataProcessor processor){
         try {
 
-            DataManager.getInstance().requestAllData(DataManager.RequestType.NOTIFICATION);
+            SendNotificationManager.getInstance().fireNotications(processor);
         }catch (Exception e) {
             Log.e(TAG, "error trying to generate a weather notification: " + e.getMessage(), e);
             done();
@@ -88,18 +89,10 @@ public class NotificationSchedulingService extends IntentService {
         }
     }
 
-    public void updated(String requestType) {
-        updateRequestType.add(requestType);
+    public void updated(ExchangeDataProcessor processor) {
 
-        if(updateRequestType.size() == 3){
-            done();
-        }
-    }
+        sendNotification(processor);
 
-
-    public void noInternetError() {
         done();
-        // Alert the user that can't get data...enable 3g data??
-        Log.e(TAG,"no internet error");
     }
 }
