@@ -36,12 +36,26 @@ public class ExchangeDataRequest {
      */
     public void requestAllExchangeData(DataManager.RequestType requestType){
 
-        // Request GDAX
-        Log.i(TAG, "Request GDAX data");
-        request(DataManager.RequestSource.GDAX,  requestType);
+        // Request GDAX_ETH
+        Log.i(TAG, "Request GDAX_ETH data");
+        request(DataManager.RequestSource.GDAX_ETH,  requestType);
 
-        Log.i(TAG, "Request kraken data");
-        request(DataManager.RequestSource.Kraken, requestType);
+        Log.i(TAG, "Request kraken_ETH data");
+        request(DataManager.RequestSource.Kraken_ETH, requestType);
+
+
+        Log.i(TAG, "Request GDAX_BTC data");
+        request(DataManager.RequestSource.GDAX_BTC,  requestType);
+
+        Log.i(TAG, "Request kraken_BTC data");
+        request(DataManager.RequestSource.Kraken_BTC, requestType);
+
+
+        Log.i(TAG, "Request GDAX_LTC data");
+        request(DataManager.RequestSource.GDAX_LTC,  requestType);
+
+        Log.i(TAG, "Request kraken_LTC data");
+        request(DataManager.RequestSource.Kraken_LTC, requestType);
 
     }
 
@@ -53,12 +67,12 @@ public class ExchangeDataRequest {
         }
     }
 
-    private void makeRequest(DataManager.RequestSource requestSource, DataManager.RequestType weatherRequestType){
+    private void makeRequest(DataManager.RequestSource requestSource, DataManager.RequestType requestType){
 
         if(requestSource != null) {
             String url = requestSource.getUrl();
 
-            RequestTask requestTask = new RequestTask(requestSource, this,weatherRequestType);
+            RequestTask requestTask = new RequestTask(requestSource, this, requestType);
 
             requestTask.execute(url);
 
@@ -72,19 +86,59 @@ public class ExchangeDataRequest {
         Log.v(TAG, requestType + " request type: " + requestSource + " response: " + response);
 
         try {
-            if(requestSource.equals(DataManager.RequestSource.GDAX)) {
+            if(requestSource.equals(DataManager.RequestSource.GDAX_ETH)) {
                 JSONArray json = new JSONArray(response);
                 if (json != null) {
-                    DataManager.getInstance().responseGDAX(response, json, requestSource,
+                    DataManager.getInstance().responseGDAX_ETH(response, json, requestSource,
                             requestType, lastUpdateDate);
                 } else {
                     Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
                             + ", unexpected format");
                 }
-            }else if(requestSource.equals(DataManager.RequestSource.Kraken)){
+            }else if(requestSource.equals(DataManager.RequestSource.Kraken_ETH)){
                 JSONObject json = new JSONObject(response);
                 if (json != null) {
-                    DataManager.getInstance().responseKraken(response, json, requestSource,
+                    DataManager.getInstance().responseKraken_ETH(response, json, requestSource,
+                            requestType, lastUpdateDate);
+                } else {
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                            + ", unexpected format");
+                }
+            }
+            // BTC
+            else if(requestSource.equals(DataManager.RequestSource.GDAX_BTC)) {
+                JSONArray json = new JSONArray(response);
+                if (json != null) {
+                    DataManager.getInstance().responseGDAX_BTC(response, json, requestSource,
+                            requestType, lastUpdateDate);
+                } else {
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                            + ", unexpected format");
+                }
+            }else if(requestSource.equals(DataManager.RequestSource.Kraken_BTC)){
+                JSONObject json = new JSONObject(response);
+                if (json != null) {
+                    DataManager.getInstance().responseKraken_BTC(response, json, requestSource,
+                            requestType, lastUpdateDate);
+                } else {
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                            + ", unexpected format");
+                }
+            }
+            // LTC
+            else if(requestSource.equals(DataManager.RequestSource.GDAX_LTC)) {
+                JSONArray json = new JSONArray(response);
+                if (json != null) {
+                    DataManager.getInstance().responseGDAX_LTC(response, json, requestSource,
+                            requestType, lastUpdateDate);
+                } else {
+                    Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
+                            + ", unexpected format");
+                }
+            }else if(requestSource.equals(DataManager.RequestSource.Kraken_LTC)){
+                JSONObject json = new JSONObject(response);
+                if (json != null) {
+                    DataManager.getInstance().responseKraken_LTC(response, json, requestSource,
                             requestType, lastUpdateDate);
                 } else {
                     Log.e(TAG, "Error getting data " + requestType + "for type " + requestType

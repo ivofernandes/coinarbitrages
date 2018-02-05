@@ -10,8 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.coinarbritages.coinarbritages.activities.MenuActivity;
 import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.common.SharedResources;
@@ -149,14 +147,23 @@ public class MainActivity extends MenuActivity {
 
     public void showData(ExchangeDataProcessor processor) {
 
+        // Alerts
         LinearLayout alertsContainer = (LinearLayout) findViewById(R.id.alertsContainer);
         alertsContainer.removeAllViews();
 
-        TextView textView = new TextView(this);
-        textView.setText(processor.getArbitrageAlerts());
-        textView.setTextColor(layoutManager.getSmoothForegroundColor());
-        alertsContainer.addView(textView);
+        TextView textViewAlerts = new TextView(this);
+        textViewAlerts.setText(processor.getArbitrageAlerts());
+        textViewAlerts.setTextColor(layoutManager.getSmoothForegroundColor());
+        alertsContainer.addView(textViewAlerts);
+        
+        // Arbitrage
+        LinearLayout arbitrageMonitorContainer = (LinearLayout) findViewById(R.id.arbitrageMonitorContainer);
+        arbitrageMonitorContainer.removeAllViews();
 
+        TextView textViewArbitrage = new TextView(this);
+        textViewArbitrage.setText(processor.getArbitrageMonitor());
+        textViewArbitrage.setTextColor(layoutManager.getSmoothForegroundColor());
+        arbitrageMonitorContainer.addView(textViewArbitrage);
 
 
 

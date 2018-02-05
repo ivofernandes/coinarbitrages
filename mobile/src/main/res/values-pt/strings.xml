@@ -54,7 +54,6 @@
     <string name="apparent_temperature_description">Vivemos num mundo de percepções, tudo é relativo, por isso usamos a temperatura aparente também conhecido como \'feels like\', como valores de temperatura padrão que são mostrados nesta aplicação. Este valor calculado com base na temperatura do termômetro, humidade e velocidade do vento.</string>
     <string name="colorMeaning">Significado das Cores</string>
     <string name="colorMeaningDescription">A cor das previsões que vais ver nesta aplicação mudam consoante a temperatura aparente, a ideia é que com a prática, nem sequer vais precisar de ler nada para ter uma ideia se vai estar calor ou frio, na seguinte tabela podes ver como as cores variam em relação à temperatura mínima aparente:</string>
-    <string name="directTrade">Direct Trade</string>
 
 </resources>
 

@@ -8,6 +8,7 @@ import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 import com.coinarbritages.coinarbritages.manager.ExchangeDataProcessor;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,8 +32,6 @@ public class NotificationSchedulingService extends IntentService {
     // Fields
     private Intent intent;
 
-    private Set<DataManager.RequestSource> updateRequestType = new HashSet<>();
-
     public NotificationSchedulingService() {
         super("NotificationSchedulingService");
 
@@ -47,26 +46,29 @@ public class NotificationSchedulingService extends IntentService {
 
     public void start() {
         try {
+            for(int i=0 ; i<180 ; i++) {
+                Date start = new Date();
+                SharedResources.getInstance().init(this.getApplicationContext());
 
-            Thread.sleep(30 * 1000); // Wait 30 seconds to repeat
-            SharedResources.getInstance().init(this.getApplicationContext());
+                Log.d(TAG, "start update/notification");
 
-            Log.d(TAG, "start update/notification");
+                DataManager.getInstance().requestAllData(DataManager.RequestType.NOTIFICATION);
 
-            clear();
+                Log.d(TAG, "end start update/notification");
+                Date end =  new Date();
 
-            DataManager.getInstance().requestAllData(DataManager.RequestType.NOTIFICATION);
+                int processingTime = (int) (end.getTime() - start.getTime());
+                int minInterval = 5 * 1000;
 
-            Log.d(TAG, "end start update/notification");
+                if(processingTime < minInterval){
+                    Thread.sleep(minInterval - processingTime);
+                }
+            }
         }catch (Exception e){
             Log.e(TAG,"Error processing scheduling event");
         }
 
         done();
-    }
-
-    private void clear() {
-        updateRequestType.clear();
     }
 
     public void sendNotification(ExchangeDataProcessor processor){

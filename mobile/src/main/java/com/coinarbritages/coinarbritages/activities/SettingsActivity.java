@@ -34,13 +34,38 @@ public class SettingsActivity extends ActionBarActivity {
         this.panel = (LinearLayout) findViewById(R.id.settingsPanel);
         panel.setBackgroundColor(layoutManager.getBackgroundColor());
 
-
         TextView notificationsText = (TextView) findViewById(R.id.notificationsText);
         notificationsText.setTextColor(layoutManager.getForegroundColor());
 
-        TextView apparentTemperatureText = (TextView) findViewById(R.id.apparentTemperatureText);
-        apparentTemperatureText.setTextColor(layoutManager.getForegroundColor());
+        // ETH
+        TextView ethText = (TextView) findViewById(R.id.ethText);
+        ethText.setTextColor(layoutManager.getForegroundColor());
 
+        TextView ethBuyGdaxSellKrakenText = (TextView) findViewById(R.id.ethBuyGdaxSellKraken);
+        ethBuyGdaxSellKrakenText.setTextColor(layoutManager.getForegroundColor());
+
+        TextView ethBuyKrakenSellGdaxText = (TextView) findViewById(R.id.ethBuyKrakenSellGdax);
+        ethBuyKrakenSellGdaxText.setTextColor(layoutManager.getForegroundColor());
+
+        // BTC
+        TextView btcText = (TextView) findViewById(R.id.btcText);
+        btcText.setTextColor(layoutManager.getForegroundColor());
+
+        TextView btcBuyGdaxSellKrakenText = (TextView) findViewById(R.id.btcBuyGdaxSellKraken);
+        btcBuyGdaxSellKrakenText.setTextColor(layoutManager.getForegroundColor());
+
+        TextView btcBuyKrakenSellGdaxText = (TextView) findViewById(R.id.btcBuyKrakenSellGdax);
+        btcBuyKrakenSellGdaxText.setTextColor(layoutManager.getForegroundColor());
+
+        // LTC
+        TextView ltcText = (TextView) findViewById(R.id.ltcText);
+        ltcText.setTextColor(layoutManager.getForegroundColor());
+
+        TextView ltcBuyGdaxSellKrakenText = (TextView) findViewById(R.id.ltcBuyGdaxSellKraken);
+        ltcBuyGdaxSellKrakenText.setTextColor(layoutManager.getForegroundColor());
+
+        TextView ltcBuyKrakenSellGdaxText = (TextView) findViewById(R.id.ltcBuyKrakenSellGdax);
+        ltcBuyKrakenSellGdaxText.setTextColor(layoutManager.getForegroundColor());
 
         // Notification
         Switch switchNotification = (Switch) findViewById(R.id.switchNotification);
@@ -55,17 +80,62 @@ public class SettingsActivity extends ActionBarActivity {
         // Notification time
         //http://developer.android.com/guide/topics/ui/controls/pickers.html
 
-        // Apparent temperature
-        Switch directTradeSwitch = (Switch) findViewById(R.id.switchDirectTrade);
-        directTradeSwitch.setTextColor(layoutManager.getForegroundColor());
-        directTradeSwitch.setChecked(userPreferencesManager.isDirectTrade());
-        directTradeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // Eth
+        Switch ethBuyKrakenSellGdaxSwitch = (Switch) findViewById(R.id.switchEthBuyKrakenSellGdax);
+        ethBuyKrakenSellGdaxSwitch.setTextColor(layoutManager.getForegroundColor());
+        ethBuyKrakenSellGdaxSwitch.setChecked(userPreferencesManager.isEthBuyKrakenSellGdax());
+        ethBuyKrakenSellGdaxSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                UserPreferencesManager.getInstance().setDirectTrade(isChecked);
+                UserPreferencesManager.getInstance().setEthBuyKrakenSellGdax(isChecked);
             }
         });
 
+        Switch ethBuyGdaxSellKrakenSwitch = (Switch) findViewById(R.id.switchEthBuyGdaxSellKraken);
+        ethBuyGdaxSellKrakenSwitch.setTextColor(layoutManager.getForegroundColor());
+        ethBuyGdaxSellKrakenSwitch.setChecked(userPreferencesManager.isEthBuyGdaxSellKraken());
+        ethBuyGdaxSellKrakenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserPreferencesManager.getInstance().setEthBuyGdaxSellKraken(isChecked);
+            }
+        });
 
-        //
+        // Btc
+        Switch btcBuyKrakenSellGdaxSwitch = (Switch) findViewById(R.id.switchBtcBuyKrakenSellGdax);
+        btcBuyKrakenSellGdaxSwitch.setTextColor(layoutManager.getForegroundColor());
+        btcBuyKrakenSellGdaxSwitch.setChecked(userPreferencesManager.isBtcBuyKrakenSellGdax());
+        btcBuyKrakenSellGdaxSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserPreferencesManager.getInstance().setBtcBuyKrakenSellGdax(isChecked);
+            }
+        });
+
+        Switch btcBuyGdaxSellKrakenSwitch = (Switch) findViewById(R.id.switchBtcBuyGdaxSellKraken);
+        ethBuyGdaxSellKrakenSwitch.setTextColor(layoutManager.getForegroundColor());
+        ethBuyGdaxSellKrakenSwitch.setChecked(userPreferencesManager.isBtcBuyGdaxSellKraken());
+        ethBuyGdaxSellKrakenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserPreferencesManager.getInstance().setBtcBuyGdaxSellKraken(isChecked);
+            }
+        });
+
+        // Ltc
+        Switch ltcBuyKrakenSellGdaxSwitch = (Switch) findViewById(R.id.switchLtcBuyKrakenSellGdax);
+        btcBuyKrakenSellGdaxSwitch.setTextColor(layoutManager.getForegroundColor());
+        btcBuyKrakenSellGdaxSwitch.setChecked(userPreferencesManager.isLtcBuyKrakenSellGdax());
+        btcBuyKrakenSellGdaxSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserPreferencesManager.getInstance().setLtcBuyKrakenSellGdax(isChecked);
+            }
+        });
+
+        Switch ltcBuyGdaxSellKrakenSwitch = (Switch) findViewById(R.id.switchLtcBuyGdaxSellKraken);
+        ethBuyGdaxSellKrakenSwitch.setTextColor(layoutManager.getForegroundColor());
+        ethBuyGdaxSellKrakenSwitch.setChecked(userPreferencesManager.isLtcBuyGdaxSellKraken());
+        ethBuyGdaxSellKrakenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserPreferencesManager.getInstance().setLtcBuyGdaxSellKraken(isChecked);
+            }
+        });
+
     }
 }

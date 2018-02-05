@@ -44,6 +44,15 @@
                     android:textOff="@string/off" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/eth"
+                android:id="@+id/ethText"
+                android:singleLine="true"
+                android:gravity="left" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,14 +62,150 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/directTrade"
-                    android:id="@+id/apparentTemperatureText"
+                    android:text="@string/buyKrakenSellGdax"
+                    android:id="@+id/ethBuyKrakenSellGdax"
                     android:singleLine="true"
                     android:gravity="left" />
+
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/switchDirectTrade"
+                    android:id="@+id/switchEthBuyKrakenSellGdax"
+                    android:gravity="right"
+                    android:textOn="@string/on"
+                    android:textOff="@string/off" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/buyGdaxSellKraken"
+                    android:id="@+id/ethBuyGdaxSellKraken"
+                    android:singleLine="true"
+                    android:gravity="left" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchEthBuyGdaxSellKraken"
+                    android:gravity="right"
+                    android:textOn="@string/on"
+                    android:textOff="@string/off" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/btc"
+                android:id="@+id/btcText"
+                android:singleLine="true"
+                android:gravity="left" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/buyKrakenSellGdax"
+                    android:id="@+id/btcBuyKrakenSellGdax"
+                    android:singleLine="true"
+                    android:gravity="left" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchBtcBuyKrakenSellGdax"
+                    android:gravity="right"
+                    android:textOn="@string/on"
+                    android:textOff="@string/off" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/buyGdaxSellKraken"
+                    android:id="@+id/btcBuyGdaxSellKraken"
+                    android:singleLine="true"
+                    android:gravity="left" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchBtcBuyGdaxSellKraken"
+                    android:gravity="right"
+                    android:textOn="@string/on"
+                    android:textOff="@string/off" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/ltc"
+                android:id="@+id/ltcText"
+                android:singleLine="true"
+                android:gravity="left" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/buyKrakenSellGdax"
+                    android:id="@+id/ltcBuyKrakenSellGdax"
+                    android:singleLine="true"
+                    android:gravity="left" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchLtcBuyKrakenSellGdax"
+                    android:gravity="right"
+                    android:textOn="@string/on"
+                    android:textOff="@string/off" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/buyGdaxSellKraken"
+                    android:id="@+id/ltcBuyGdaxSellKraken"
+                    android:singleLine="true"
+                    android:gravity="left" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/switchLtcBuyGdaxSellKraken"
                     android:gravity="right"
                     android:textOn="@string/on"
                     android:textOff="@string/off" />

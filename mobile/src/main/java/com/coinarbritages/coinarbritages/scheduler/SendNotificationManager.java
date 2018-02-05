@@ -48,21 +48,19 @@ public class SendNotificationManager {
      */
     public void fireNotications(ExchangeDataProcessor processor){
 
-
-        generatePriceNotification();
-
-        NotificationSchedulingService.getInstance().done();
+        String alerts = processor.getArbitrageAlerts();
+        if(!alerts.equals("")) {
+            generatePriceNotification(alerts);
+        }
 
     }
 
-    private boolean generatePriceNotification() {
+    private boolean generatePriceNotification(String alerts) {
 
         // Generate the notification
         String title = sharedResources.resolveString(R.string.notification_title);
 
-        String description = "HODL";
-
-        fireNotication(title, description);
+        fireNotication(title, alerts);
 
         return true;
 
@@ -79,7 +77,7 @@ public class SendNotificationManager {
         PendingIntent intent = PendingIntent.getActivity(sharedResources.getContext(), 0,
                 notificationIntent, 0);
 
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
         Notification.Builder notificationBuilder = new Notification.Builder(
                 sharedResources.getContext())

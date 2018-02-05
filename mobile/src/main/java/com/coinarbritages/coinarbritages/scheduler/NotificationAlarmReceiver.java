@@ -75,15 +75,14 @@ public class NotificationAlarmReceiver extends WakefulBroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        // Set the alarm's trigger to the next 30 seconds
-        calendar.add(Calendar.SECOND, 30);
+        // Set the alarm's trigger to the next 15 minutes
+        calendar.add(Calendar.MINUTE, 15);
 
         Log.d(TAG, "setting alarm to the time: " + calendar.getTime());
 
         // Set the alarm to fire
-        alarmMgr.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(),
+        alarmMgr.setRepeating(
+                AlarmManager.RTC_WAKEUP, 1,
                 calendar.getTimeInMillis(),
                 alarmIntent);
 

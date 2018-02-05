@@ -43,8 +43,6 @@ public class HelpActivity extends ActionBarActivity {
         LinearLayout colorMeaningDescriptionPanel = (LinearLayout) findViewById(R.id.colorMeaningDescriptionPanel);
         colorMeaningDescriptionPanel.setBackgroundColor(layoutManager.getBackgroundColor());
 
-        TextView textDirectTrade = (TextView) findViewById(R.id.directTrade);
-        textDirectTrade.setTextColor(layoutManager.getForegroundColor());
 
         TextView apparentTemperatureDescription = (TextView) findViewById(R.id.apparentTemperatureDescription);
         apparentTemperatureDescription.setTextColor(layoutManager.getForegroundColor());
