@@ -86,22 +86,38 @@ public class UserPreferencesManager {
 
     public void setEthBuyGdaxSellKraken(boolean ethBuyGdaxSellKraken) {
         isEthBuyGdaxSellKraken = ethBuyGdaxSellKraken;
+
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_ETH_BUY_GDAX_SELL_KRAKEN,
+                this.isEthBuyGdaxSellKraken);
     }
 
     public void setBtcBuyKrakenSellGdax(boolean btcBuyKrakenSellGdax) {
         isBtcBuyKrakenSellGdax = btcBuyKrakenSellGdax;
+
+
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_BTC_BUY_KRAKEN_SELL_GDAX,
+                this.isBtcBuyKrakenSellGdax);
     }
 
     public void setBtcBuyGdaxSellKraken(boolean btcBuyGdaxSellKraken) {
         isBtcBuyGdaxSellKraken = btcBuyGdaxSellKraken;
+
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_BTC_BUY_GDAX_SELL_KRAKEN,
+                this.isBtcBuyGdaxSellKraken);
     }
 
     public void setLtcBuyKrakenSellGdax(boolean ltcBuyKrakenSellGdax) {
         isLtcBuyKrakenSellGdax = ltcBuyKrakenSellGdax;
+
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_LTC_BUY_KRAKEN_SELL_GDAX,
+                this.isLtcBuyKrakenSellGdax);
     }
 
     public void setLtcBuyGdaxSellKraken(boolean ltcBuyGdaxSellKraken) {
         isLtcBuyGdaxSellKraken = ltcBuyGdaxSellKraken;
+
+        CacheManager.getInstance().putBoolean(CacheManager.PREFERENCE_SETTINGS_LTC_BUY_GDAX_SELL_KRAKEN,
+                this.isLtcBuyGdaxSellKraken);
     }
 
     public void setNotification(boolean notification) {

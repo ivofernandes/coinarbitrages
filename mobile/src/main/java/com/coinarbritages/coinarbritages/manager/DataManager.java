@@ -37,16 +37,27 @@ public class DataManager {
         NOTIFICATION, // Request to send a notifications
     };
 
+
+    private static final String API_KRAKEN = "https://api.kraken.com/0/public/Ticker?pair=";
+    private static final String API_GDAX = "https://api.gdax.com/products/<p>/trades";
+    private static final String API_BITSTAMP = "https://www.bitstamp.net/api/v2/ticker/";
+
     public enum RequestSource{
-        GDAX_ETH("https://api.gdax.com/products/ETH-EUR/trades"),
-        Kraken_ETH("https://api.kraken.com/0/public/Ticker?pair=ETHEUR"),
+        // GDAX
+        GDAX_BTC(API_GDAX.replace("<p>","BTC-EUR")),
+        GDAX_ETH(API_GDAX.replace("<p>","ETH-EUR")),
+        GDAX_LTC(API_GDAX.replace("<p>","LTC-EUR")),
 
+        // Kraken
+        Kraken_BTC(API_KRAKEN + "BTCEUR"),
+        Kraken_ETH(API_KRAKEN + "ETHEUR"),
+        Kraken_LTC(API_KRAKEN + "LTCEUR"),
+        Kraken_XRP(API_KRAKEN + "XRPEUR"),
 
-        GDAX_BTC("https://api.gdax.com/products/BTC-EUR/trades"),
-        Kraken_BTC("https://api.kraken.com/0/public/Ticker?pair=XBTEUR"),
-
-        GDAX_LTC("https://api.gdax.com/products/LTC-EUR/trades"),
-        Kraken_LTC("https://api.kraken.com/0/public/Ticker?pair=LTCEUR");
+        // Bitstamp
+        Bistamp_ETH(API_BITSTAMP + "etheur"),
+        Bistamp_BTC(API_BITSTAMP + "btceur"),
+        Bistamp_XRP(API_BITSTAMP + "xrpeur");
 
         private String url;
 
@@ -65,72 +76,53 @@ public class DataManager {
     // Fields
     private Map<String,String> options = new HashMap<String,String>();
 
-    private JSONArray gdax_ETH = null;
-    private JSONObject kraken_ETH = null;
-
-    private JSONArray gdax_BTC = null;
-    private JSONObject kraken_BTC = null;
-
-    private JSONArray gdax_LTC = null;
-    private JSONObject kraken_LTC = null;
-
+    private Map<DataManager.RequestSource,String> responses = new HashMap<>();
 
     // Actions
     public void requestAllData(RequestType requestType) {
+        responses.clear();
+
         exchangeDataRequest.requestAllExchangeData(requestType);
+    }
+
+    public void response(RequestSource source, String response, RequestType requestType) throws JSONException {
+        responses.put(source, response);
+
+        processRequests(requestType);
     }
 
     // Responses
 
 
-    public void responseGDAX_ETH(String response, JSONArray json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.gdax_ETH = json;
-
-        processRequests(requestType);
-    }
-
-    public void responseKraken_ETH(String response, JSONObject json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.kraken_ETH = json;
-
-        processRequests(requestType);
-    }
-
-    public void responseGDAX_BTC(String response, JSONArray json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.gdax_BTC = json;
-
-        processRequests(requestType);
-    }
-
-    public void responseKraken_BTC(String response, JSONObject json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.kraken_BTC = json;
-
-        processRequests(requestType);
-    }
-
-    public void responseGDAX_LTC(String response, JSONArray json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.gdax_LTC = json;
-
-        processRequests(requestType);
-    }
-
-    public void responseKraken_LTC(String response, JSONObject json, RequestSource requestSource, RequestType requestType, Date lastUpdateDate) throws JSONException {
-        this.kraken_LTC = json;
-
-        processRequests(requestType);
-    }
-
     private void processRequests(RequestType requestType) throws JSONException {
-        // If got all the data go ahead
+        if(responses.size() < calculateResponses()){
+            return;
+        }
 
-        boolean ethComplete = (this.gdax_ETH != null && this.kraken_ETH != null);
-        boolean btcComplete = (this.gdax_BTC != null && this.kraken_BTC != null);
-        boolean ltcComplete = (this.gdax_LTC != null && this.kraken_LTC != null);
+        JSONArray gdax_ETH = new JSONArray(responses.get(RequestSource.GDAX_ETH));
+        JSONArray gdax_BTC = new JSONArray(responses.get(RequestSource.GDAX_BTC));
+        JSONArray gdax_LTC = new JSONArray(responses.get(RequestSource.GDAX_LTC));
+
+        JSONObject kraken_ETH = new JSONObject(responses.get(RequestSource.Kraken_ETH));
+        JSONObject kraken_BTC = new JSONObject(responses.get(RequestSource.Kraken_BTC));
+        JSONObject kraken_LTC = new JSONObject(responses.get(RequestSource.Kraken_LTC));
+        JSONObject kraken_XRP = new JSONObject(responses.get(RequestSource.Kraken_XRP));
+
+        JSONObject bistamp_BTC = new JSONObject(responses.get(RequestSource.Bistamp_BTC));
+        JSONObject bistamp_ETH = new JSONObject(responses.get(RequestSource.Bistamp_ETH));
+        JSONObject bistamp_XRP = new JSONObject(responses.get(RequestSource.Bistamp_XRP));
+
+        // If got all the data go ahead
+        boolean ethComplete = (gdax_ETH != null && kraken_ETH != null);
+        boolean btcComplete = (gdax_BTC != null && kraken_BTC != null);
+        boolean ltcComplete = (gdax_LTC != null && kraken_LTC != null);
 
         if(ethComplete && btcComplete && ltcComplete){
-            ExchangeDataProcessor processor = new ExchangeDataProcessor(
-                    this.gdax_ETH, this.kraken_ETH,
-                    this.gdax_BTC, this.kraken_BTC,
-                    this.gdax_LTC, this.kraken_LTC);
+            ExchangeDataProcessor processor = new ExchangeDataProcessor();
+            processor.loadGdax(gdax_BTC,gdax_ETH,gdax_LTC);
+            processor.loadKraken(kraken_BTC, kraken_ETH, kraken_LTC, kraken_XRP);
+            processor.loadBitstamp(bistamp_BTC, bistamp_ETH, bistamp_XRP);
+            processor.init();
 
             if(RequestType.UPDATE_VIEWS.equals(requestType)) {
                 MainActivity.getInstance().showData(processor);
@@ -145,6 +137,10 @@ public class DataManager {
                 }
             }
         }
+    }
+
+    private int calculateResponses() {
+        return 10;
     }
 
 }

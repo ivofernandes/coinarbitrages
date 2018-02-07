@@ -6,6 +6,7 @@ import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -36,26 +37,38 @@ public class ExchangeDataRequest {
      */
     public void requestAllExchangeData(DataManager.RequestType requestType){
 
-        // Request GDAX_ETH
+        // Request GDAX
         Log.i(TAG, "Request GDAX_ETH data");
         request(DataManager.RequestSource.GDAX_ETH,  requestType);
-
-        Log.i(TAG, "Request kraken_ETH data");
-        request(DataManager.RequestSource.Kraken_ETH, requestType);
-
 
         Log.i(TAG, "Request GDAX_BTC data");
         request(DataManager.RequestSource.GDAX_BTC,  requestType);
 
-        Log.i(TAG, "Request kraken_BTC data");
-        request(DataManager.RequestSource.Kraken_BTC, requestType);
-
-
         Log.i(TAG, "Request GDAX_LTC data");
         request(DataManager.RequestSource.GDAX_LTC,  requestType);
 
+        // Kraken
+        Log.i(TAG, "Request kraken_ETH data");
+        request(DataManager.RequestSource.Kraken_ETH, requestType);
+
+        Log.i(TAG, "Request kraken_BTC data");
+        request(DataManager.RequestSource.Kraken_BTC, requestType);
+
         Log.i(TAG, "Request kraken_LTC data");
         request(DataManager.RequestSource.Kraken_LTC, requestType);
+
+        Log.i(TAG, "Request kraken_XRP data");
+        request(DataManager.RequestSource.Kraken_XRP, requestType);
+
+        // Bitstamp
+        Log.i(TAG, "Request Bitstamp BTC data");
+        request(DataManager.RequestSource.Bistamp_BTC, requestType);
+
+        Log.i(TAG, "Request Bitstamp ETH data");
+        request(DataManager.RequestSource.Bistamp_ETH, requestType);
+
+        Log.i(TAG, "Request Bitstamp XRP data");
+        request(DataManager.RequestSource.Bistamp_XRP, requestType);
 
     }
 
@@ -75,16 +88,18 @@ public class ExchangeDataRequest {
             RequestTask requestTask = new RequestTask(requestSource, this, requestType);
 
             requestTask.execute(url);
-
        }
     }
 
     public void response(String response, DataManager.RequestSource requestSource,
                          DataManager.RequestType requestType,
-                         Date lastUpdateDate){
+                         Date lastUpdateDate) throws JSONException {
 
         Log.v(TAG, requestType + " request type: " + requestSource + " response: " + response);
 
+        DataManager.getInstance().response(requestSource, response, requestType);
+
+        /*
         try {
             if(requestSource.equals(DataManager.RequestSource.GDAX_ETH)) {
                 JSONArray json = new JSONArray(response);
@@ -149,6 +164,7 @@ public class ExchangeDataRequest {
             Log.e(TAG, "Error getting data " + requestType + "for type " + requestType
                     + ", data: " + e.getMessage(),e);
         }
+        */
     }
 
 

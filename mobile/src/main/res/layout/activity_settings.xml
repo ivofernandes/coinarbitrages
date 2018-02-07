@@ -51,12 +51,15 @@
                 android:text="@string/eth"
                 android:id="@+id/ethText"
                 android:singleLine="true"
-                android:gravity="left" />
+                android:gravity="left"
+                android:layout_marginTop="10pt"
+                android:layout_marginBottom="5pt"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +82,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,12 +111,15 @@
                 android:text="@string/btc"
                 android:id="@+id/btcText"
                 android:singleLine="true"
-                android:gravity="left" />
+                android:gravity="left"
+                android:layout_marginTop="10pt"
+                android:layout_marginBottom="5pt" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -135,7 +142,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -163,12 +171,15 @@
                 android:text="@string/ltc"
                 android:id="@+id/ltcText"
                 android:singleLine="true"
-                android:gravity="left" />
+                android:gravity="left"
+                android:layout_marginTop="10pt"
+                android:layout_marginBottom="5pt" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -191,7 +202,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="5pt">
 
                 <TextView
                     android:layout_width="wrap_content"

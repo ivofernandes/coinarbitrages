@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,48 +20,68 @@ public class ExchangeDataProcessor {
     private final static String TAG = "ExchangeDataProcessor";
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
-    private final JSONObject krakenJsonEth;
-    private final JSONArray gdaxJsonEth;
+    private JSONArray gdaxJsonBtc;
+    private JSONArray gdaxJsonEth;
+    private JSONArray gdaxJsonLtc;
 
-    private final JSONArray gdaxJsonBtc;
-    private final JSONObject krakenJsonBtc;
+    private JSONObject krakenJsonBtc;
+    private JSONObject krakenJsonEth;
+    private JSONObject krakenJsonLtc;
+    private JSONObject krakenJsonXrp;
 
-    private final JSONArray gdaxJsonLtc;
-    private final JSONObject krakenJsonLtc;
+    private JSONObject bistampBtc;
+    private JSONObject bistampEth;
+    private JSONObject bistampXrp;
 
-    private double ethDelta;
+    private double ethGdaxKrakenDelta;
+    private double ethGdaxBitstampDelta;
     private Double ethGdaxPrice = null;
     private Double ethKrakenPrice = null;
 
-    private double btcDelta;
+    private double btcGdaxKrakenDelta;
+    private double btcGdaxBitstampDelta;
     private Double btcGdaxPrice = null;
     private Double btcKrakenPrice = null;
+    private Double xrpKrakenPrice;
 
     private double ltcDelta;
     private Double ltcGdaxPrice = null;
     private Double ltcKrakenPrice = null;
 
-    public ExchangeDataProcessor(JSONArray gdax_ETH, JSONObject kraken_ETH,
-                                 JSONArray gdax_BTC, JSONObject kraken_BTC,
-                                 JSONArray gdax_LTC, JSONObject kraken_LTC) {
+    private Double ethBitstampPrice;
+    private Double btcBitstampPrice;
+    private Double xrpBitstampPrice;
+    private double xrpBitstampKrakenDelta;
 
-        this.gdaxJsonEth = gdax_ETH;
-        this.krakenJsonEth = kraken_ETH;
+    public ExchangeDataProcessor() {
+        numberFormat.setMinimumFractionDigits(2);
+    }
 
+    public void loadGdax(JSONArray gdax_BTC, JSONArray gdax_ETH, JSONArray gdax_LTC) {
         this.gdaxJsonBtc = gdax_BTC;
-        this.krakenJsonBtc = kraken_BTC;
-
+        this.gdaxJsonEth = gdax_ETH;
         this.gdaxJsonLtc = gdax_LTC;
-        this.krakenJsonLtc = kraken_LTC;
+    }
 
-        init();
+    public void loadKraken(JSONObject kraken_BTC, JSONObject kraken_ETH, JSONObject kraken_LTC, JSONObject kraken_XRP) {
+        this.krakenJsonBtc = kraken_BTC;
+        this.krakenJsonEth = kraken_ETH;
+        this.krakenJsonLtc = kraken_LTC;
+        this.krakenJsonXrp = kraken_XRP;
+    }
+
+    public void loadBitstamp(JSONObject bistamp_btc, JSONObject bistamp_eth, JSONObject bistamp_xrp) {
+        this.bistampBtc = bistamp_btc;
+        this.bistampEth = bistamp_eth;
+        this.bistampXrp = bistamp_xrp;
     }
 
     /**
      * Process the exchange data
      */
-    private void init() {
+    public void init() {
 
         try {
             initArbitrage();
@@ -76,6 +97,26 @@ public class ExchangeDataProcessor {
         initBtc();
 
         initLtc();
+
+        initXrp();
+    }
+
+    private void initXrp() throws JSONException {
+        // KRAKEN_XRP
+        JSONObject krakenPricesJson = krakenJsonXrp.getJSONObject("result").getJSONObject("XXRPZEUR");
+        JSONArray krakenAsk = krakenPricesJson.getJSONArray("a");
+        xrpKrakenPrice = Double.parseDouble(krakenAsk.get(0).toString());
+
+        // Bitstamp xrp
+        xrpBitstampPrice = Double.parseDouble(bistampXrp.get("last").toString());
+
+        // XRP Delta
+        if(xrpKrakenPrice != null && xrpBitstampPrice != null){
+            this.xrpBitstampKrakenDelta = (Math.abs(xrpBitstampPrice / xrpKrakenPrice) - 1) * 100;
+
+            String message = "!!! Bitcoin is is " + btcGdaxKrakenDelta + "% above in bitstamp than kraken\n";
+            Log.i(TAG,message);
+        }
     }
 
     private void initEth() throws JSONException {
@@ -89,11 +130,21 @@ public class ExchangeDataProcessor {
         JSONArray krakenAsk = krakenPricesJson.getJSONArray("a");
         ethKrakenPrice = Double.parseDouble(krakenAsk.get(0).toString());
 
+        // Bitstamp ETH
+        ethBitstampPrice = Double.parseDouble(bistampEth.get("last").toString());
+
         // ETH Delta
         if(ethKrakenPrice != null && ethGdaxPrice != null){
-            this.ethDelta = (Math.abs(ethGdaxPrice / ethKrakenPrice) - 1) * 100;
+            this.ethGdaxKrakenDelta = (Math.abs(ethGdaxPrice / ethKrakenPrice) - 1) * 100;
 
-            String message = "!!! Ethereum is is " + ethDelta + "% above in gdax than kraken\n";
+            String message = "!!! Ethereum is is " + ethGdaxKrakenDelta + "% above in gdax than kraken\n";
+            Log.i(TAG,message);
+        }
+
+        if(ethBitstampPrice != null && ethGdaxPrice != null){
+            this.ethGdaxBitstampDelta = (Math.abs(ethGdaxPrice / ethBitstampPrice) - 1) * 100;
+
+            String message = "!!! Ethereum is is " + ethGdaxBitstampDelta + "% above in gdax than bitstamp\n";
             Log.i(TAG,message);
         }
     }
@@ -109,11 +160,21 @@ public class ExchangeDataProcessor {
         JSONArray krakenAsk = krakenPricesJson.getJSONArray("a");
         btcKrakenPrice = Double.parseDouble(krakenAsk.get(0).toString());
 
+        // Bitstamp BTC
+        btcBitstampPrice = Double.parseDouble(bistampBtc.get("last").toString());
+
         // BTC Delta
         if(btcKrakenPrice != null && btcGdaxPrice != null){
-            this.btcDelta = (Math.abs(btcGdaxPrice / btcKrakenPrice) - 1) * 100;
+            this.btcGdaxKrakenDelta = (Math.abs(btcGdaxPrice / btcKrakenPrice) - 1) * 100;
 
-            String message = "!!! Bitcoin is is " + btcDelta + "% above in gdax than kraken\n";
+            String message = "!!! Bitcoin is is " + btcGdaxKrakenDelta + "% above in gdax than kraken\n";
+            Log.i(TAG,message);
+        }
+
+        if(btcBitstampPrice != null && btcGdaxPrice != null){
+            this.btcGdaxBitstampDelta = (Math.abs(btcGdaxPrice / btcBitstampPrice) - 1) * 100;
+
+            String message = "!!! Bitcoin is is " + btcGdaxBitstampDelta + "% above in gdax than bitstamp\n";
             Log.i(TAG,message);
         }
     }
@@ -144,29 +205,29 @@ public class ExchangeDataProcessor {
         String message = "";
 
         // ETH
-        if(UserPreferencesManager.getInstance().isEthBuyKrakenSellGdax() && ethDelta > minDelta) {
-            message += "ETH -> GDAX / Kraken = " + ethDelta + "\n";
+        if(UserPreferencesManager.getInstance().isEthBuyKrakenSellGdax() && ethGdaxKrakenDelta > minDelta) {
+            message += "ETH -> GDAX / Kraken = " + ethGdaxKrakenDelta + "\n";
         }
 
-        if(UserPreferencesManager.getInstance().isEthBuyGdaxSellKraken() && ethDelta < minDelta * -1) {
-            message += "ETH -> GDAX / Kraken = " + ethDelta + "\n";
+        if(UserPreferencesManager.getInstance().isEthBuyGdaxSellKraken() && ethGdaxKrakenDelta < minDelta * -1) {
+            message += "ETH -> GDAX / Kraken = " + ethGdaxKrakenDelta + "\n";
         }
 
         // BTC
-        if(UserPreferencesManager.getInstance().isBtcBuyKrakenSellGdax() && ethDelta > minDelta) {
-            message += "BTC -> GDAX / Kraken = " + btcDelta + "\n";
+        if(UserPreferencesManager.getInstance().isBtcBuyKrakenSellGdax() && btcGdaxKrakenDelta > minDelta) {
+            message += "BTC -> GDAX / Kraken = " + btcGdaxKrakenDelta + "\n";
         }
 
-        if(UserPreferencesManager.getInstance().isBtcBuyGdaxSellKraken() && ethDelta < minDelta * -1) {
-            message += "BTC -> GDAX / Kraken = " + btcDelta + "\n";
+        if(UserPreferencesManager.getInstance().isBtcBuyGdaxSellKraken() && btcGdaxKrakenDelta < minDelta * -1) {
+            message += "BTC -> GDAX / Kraken = " + btcGdaxKrakenDelta + "\n";
         }
 
         // LTC
-        if(UserPreferencesManager.getInstance().isLtcBuyKrakenSellGdax() && ethDelta > minDelta) {
+        if(UserPreferencesManager.getInstance().isLtcBuyKrakenSellGdax() && ltcDelta > minDelta) {
             message += "LTC -> GDAX / Kraken = " + ltcDelta + "\n";
         }
 
-        if(UserPreferencesManager.getInstance().isLtcBuyGdaxSellKraken() && ethDelta < minDelta * -1) {
+        if(UserPreferencesManager.getInstance().isLtcBuyGdaxSellKraken() && ltcDelta < minDelta * -1) {
             message += "LTC -> GDAX / Kraken = " + ltcDelta + "\n";
         }
 
@@ -174,23 +235,31 @@ public class ExchangeDataProcessor {
     }
 
     public String getArbitrageMonitor() {
-
         String date = dateFormat.format(new Date());
 
         String message = date + "\n"
 
                 + "ETH" + "\n"
-                + "GDAX / Kraken = " + ethDelta + "\n"
+                + "GDAX / Kraken = " + numberFormat.format(ethGdaxKrakenDelta) + "%\n"
+                + "GDAX / Bitstamp = " + numberFormat.format(ethGdaxBitstampDelta) + "%\n"
                 + "GDAX: " + ethGdaxPrice + "\n"
-                + "Kraken: " + ethKrakenPrice + "\n" + "\n"
+                + "Kraken: " + ethKrakenPrice + "\n"
+                + "Bitstamp: " + ethBitstampPrice + "\n" + "\n"
 
                 + "BTC" + "\n"
-                + "GDAX / Kraken = " + btcDelta + "\n"
+                + "GDAX / Kraken = " + numberFormat.format(btcGdaxKrakenDelta) + "%\n"
+                + "GDAX / Bitstamp = " + numberFormat.format(btcGdaxBitstampDelta) + "%\n"
                 + "GDAX: " + btcGdaxPrice + "\n"
-                + "Kraken: " + btcKrakenPrice + "\n" + "\n"
+                + "Kraken: " + btcKrakenPrice + "\n"
+                + "Bitstamp: " + btcBitstampPrice + "\n" + "\n"
+
+                + "XRP" + "\n"
+                + "Bitstamp / Kraken = " + numberFormat.format(xrpBitstampKrakenDelta) + "%\n"
+                + "Kraken: " + xrpKrakenPrice + "\n"
+                + "Bitstamp: " + xrpBitstampPrice + "\n" + "\n"
 
                 + "LTC" + "\n"
-                + "GDAX / Kraken = " + ltcDelta + "\n"
+                + "GDAX / Kraken = " + numberFormat.format(ltcDelta) + "%\n"
                 + "GDAX: " + ltcGdaxPrice + "\n"
                 + "Kraken: " + ltcKrakenPrice
                 ;
