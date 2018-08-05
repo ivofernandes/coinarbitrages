@@ -2,7 +2,6 @@ package com.coinarbritages.coinarbritages.common.configuration;
 
 import android.content.SharedPreferences;
 
-import com.coinarbritages.coinarbritages.OpenWeatherMap.ExchangeDataRequest;
 import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.common.SharedResources;
 

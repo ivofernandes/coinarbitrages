@@ -1,4 +1,4 @@
-package com.coinarbritages.coinarbritages.OpenWeatherMap;
+package com.coinarbritages.coinarbritages.requests;
 
 import android.os.AsyncTask;
 import com.coinarbritages.coinarbritages.common.Log;

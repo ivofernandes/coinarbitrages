@@ -1,7 +1,7 @@
 package com.coinarbritages.coinarbritages.manager;
 
 import com.coinarbritages.coinarbritages.MainActivity;
-import com.coinarbritages.coinarbritages.OpenWeatherMap.ExchangeDataRequest;
+import com.coinarbritages.coinarbritages.requests.ExchangeDataRequest;
 import com.coinarbritages.coinarbritages.common.Log;
 import com.coinarbritages.coinarbritages.scheduler.NotificationSchedulingService;
 
@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +56,8 @@ public class DataManager {
         // Bitstamp
         Bistamp_ETH(API_BITSTAMP + "etheur"),
         Bistamp_BTC(API_BITSTAMP + "btceur"),
-        Bistamp_XRP(API_BITSTAMP + "xrpeur");
+        Bistamp_XRP(API_BITSTAMP + "xrpeur"),
+        Bistamp_LTC(API_BITSTAMP + "ltceur");
 
         private String url;
 
@@ -111,6 +111,7 @@ public class DataManager {
         JSONObject bistamp_BTC = new JSONObject(responses.get(RequestSource.Bistamp_BTC));
         JSONObject bistamp_ETH = new JSONObject(responses.get(RequestSource.Bistamp_ETH));
         JSONObject bistamp_XRP = new JSONObject(responses.get(RequestSource.Bistamp_XRP));
+        JSONObject bistamp_LTC = new JSONObject(responses.get(RequestSource.Bistamp_LTC));
 
         // If got all the data go ahead
         boolean ethComplete = (gdax_ETH != null && kraken_ETH != null);
@@ -121,7 +122,7 @@ public class DataManager {
             ExchangeDataProcessor processor = new ExchangeDataProcessor();
             processor.loadGdax(gdax_BTC,gdax_ETH,gdax_LTC);
             processor.loadKraken(kraken_BTC, kraken_ETH, kraken_LTC, kraken_XRP);
-            processor.loadBitstamp(bistamp_BTC, bistamp_ETH, bistamp_XRP);
+            processor.loadBitstamp(bistamp_BTC, bistamp_ETH, bistamp_XRP, bistamp_LTC);
             processor.init();
 
             if(RequestType.UPDATE_VIEWS.equals(requestType)) {
@@ -140,7 +141,7 @@ public class DataManager {
     }
 
     private int calculateResponses() {
-        return 10;
+        return 11;
     }
 
 }

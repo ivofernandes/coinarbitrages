@@ -1,13 +1,11 @@
-package com.coinarbritages.coinarbritages.OpenWeatherMap;
+package com.coinarbritages.coinarbritages.requests;
 
 import com.coinarbritages.coinarbritages.common.Log;
 
 import com.coinarbritages.coinarbritages.common.SharedResources;
 import com.coinarbritages.coinarbritages.manager.DataManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -69,6 +67,9 @@ public class ExchangeDataRequest {
 
         Log.i(TAG, "Request Bitstamp XRP data");
         request(DataManager.RequestSource.Bistamp_XRP, requestType);
+
+        Log.i(TAG, "Request Bitstamp LTC data");
+        request(DataManager.RequestSource.Bistamp_LTC, requestType);
 
     }
 
